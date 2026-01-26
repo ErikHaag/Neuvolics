@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net451</TargetFramework>
-		<Nullable>enable</Nullable>
+		<TargetFramework>net452</TargetFramework>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -15,6 +14,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Reference Include="Brimstone">
+		  <HintPath>..\Brimstone\bin\Debug\net452\Brimstone.dll</HintPath>
+		</Reference>
 		<Reference Include="MMHOOK_ModdedLightning">
 			<HintPath>$(OpusDir)\MMHOOK_ModdedLightning.dll</HintPath>
 		</Reference>

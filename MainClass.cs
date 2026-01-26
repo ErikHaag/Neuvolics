@@ -15,17 +15,17 @@ namespace Neuvolics
 
         public override void LoadPuzzleContent()
         {
-            // second, import your assets, glyphs, transmutations, hooks, and detours
+            Atoms.AddAtomTypes();
         }
 
         public override void PostLoad()
         {
-            // third, follow through with various hand-offs
+
         }
 
         public override void Unload()
         {
-            // lastly, remove all the hooks you made in LoadPuzzleContent
+
         }
     }
 }
