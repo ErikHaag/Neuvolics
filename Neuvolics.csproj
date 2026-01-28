@@ -36,6 +36,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Content\textures\atoms\erikhaag\Neuvolics\" />
+	  <Folder Include="Content\textures\parts\erikhaag\Neuvolics\" />
 	</ItemGroup>
 
 </Project>
