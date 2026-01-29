@@ -8,7 +8,7 @@ public static class API
 
     public static int GetNeuvolicIndex(AtomType aT)
     {
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 5; i++)
         {
             if (TrueNeuvolicCycle[i] == aT)
             {

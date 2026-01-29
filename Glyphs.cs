@@ -87,9 +87,10 @@ public static class Glyphs
             icon: FixationIcon,
             hoveredIcon: FixationIconHover,
             usedHexes: new HexIndex[] {
-                SeparationPotassiumIrisHex,
-                SeparationHoleHex,
-                SeparationLithiumIrisHex
+                FixationHole1Hex,
+                FixationHole2Hex,
+                FixationAntimonyIrisHex,
+                FixationTrueNeuvolicIrisHex
             },
             customPermission: MainClass.FixationPermission
         );
