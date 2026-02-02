@@ -17,7 +17,10 @@ public class MainClass : QuintessentialMod
     public override void LoadPuzzleContent()
     {
         Atoms.AddAtomTypes();
+        Glyphs.LoadSounds();
+        Glyphs.AddHooks();
         Glyphs.AddGlyphs();
+
 
         QApi.AddPuzzlePermission(SeparationPermission, "Glyph of Separation", "Neuvolics");
         QApi.AddPuzzlePermission(FixationPermission, "Glyph of Fixation", "Neuvolics");
@@ -30,6 +33,6 @@ public class MainClass : QuintessentialMod
 
     public override void Unload()
     {
-
+        Glyphs.RemoveHooks();
     }
 }

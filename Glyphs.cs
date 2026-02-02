@@ -1,7 +1,10 @@
-﻿using Quintessential;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using Quintessential;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using PartType = class_139;
-using Permissions = enum_149;
 using Texture = class_256;
 
 namespace Neuvolics;
@@ -25,6 +28,8 @@ public static class Glyphs
     public static readonly Texture FixationIconHover = Brimstone.API.GetTexture("textures/parts/erikhaag/Neuvolics/icons/fixation_hover");
 
     #endregion
+
+    public static readonly Texture SeparationBase = Brimstone.API.GetTexture("textures/parts/erikhaag/Neuvolics/separation_base");
 
     public static readonly Texture AntimonyHoleSymbol = Brimstone.API.GetTexture("textures/parts/erikhaag/Neuvolics/antimony_hole");
 
@@ -55,6 +60,58 @@ public static class Glyphs
 
 
     #endregion
+
+    #region Sounds
+    public static Sound SeparationSound, FixationSound;
+
+    public static void LoadSounds()
+    {
+        string contentDir = Brimstone.API.GetContentPath("Neuvolics").method_1087();
+
+        SeparationSound = Brimstone.API.GetSound(contentDir, "sounds/separation").method_1087();
+        FixationSound = Brimstone.API.GetSound(contentDir, "sounds/fixation").method_1087();
+
+        FieldInfo field = typeof(class_11).GetField("field_52", BindingFlags.Static | BindingFlags.NonPublic);
+        Dictionary<string, float> volumeDictionary = (Dictionary<string, float>)field.GetValue(null);
+
+        volumeDictionary.Add("separation", 0.5f);
+        volumeDictionary.Add("fixation", 0.5f);
+    }
+
+    #endregion
+
+    #region Hooks
+
+    public static void AddHooks()
+    {
+        IL.class_201.method_540 += SoundPhage;
+    }
+
+    public static void RemoveHooks()
+    {
+        IL.class_201.method_540 -= SoundPhage;
+    }
+
+    private static void SoundPhage(ILContext context)
+    {
+        ILCursor gremlin = new(context);
+
+        if (!gremlin.TryGotoNext(MoveType.Before,
+            instr => instr.OpCode == OpCodes.Ret
+            ))
+        {
+            throw new Exception("Could not find end of startup function");
+        }
+
+        gremlin.EmitDelegate(static () =>
+        {
+            SeparationSound.field_4062 = false;
+            FixationSound.field_4062 = false;  
+        });
+    }
+
+    #endregion
+
 
     public static void AddGlyphs()
     {
@@ -107,7 +164,9 @@ public static class Glyphs
             PartSimState pss = editor.method_507().method_481(part);
             class_236 uco = editor.method_1989(part, pos);
             float time = editor.method_504();
-            renderer.method_521(class_238.field_1989.field_90.field_169, (class_238.field_1989.field_90.field_169.field_2056.ToVector2() / 2).Rounded() + new Vector2(0f, 1f));
+            Vector2 offset = new(123f, 48f);
+
+            renderer.method_523(SeparationBase, new(0, -1f), offset, 0);
             // input
             renderer.method_530(class_238.field_1989.field_90.field_255.field_293, SeparationHoleHex, 0);
             class_135.method_272(AntimonyHoleSymbol, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - AntimonyHoleSymbol.field_2056.ToVector2() / 2).Rounded());
@@ -288,6 +347,8 @@ public static class Glyphs
 
                         pss[part].field_2743 = true;
                         pss[part].field_2744 = new AtomType[2] { Atoms.Potassium, Atoms.Lithium };
+
+                        Brimstone.API.PlaySound(sim, SeparationSound);
                     }
                     else if (pss[part].field_2743)
                     {
@@ -356,6 +417,8 @@ public static class Glyphs
 
                         pss[part].field_2743 = true;
                         pss[part].field_2744 = new AtomType[2] { Atoms.Antimony, API.GetNeuvolicAtom(trueNeuIndex + delta) };
+
+                        Brimstone.API.PlaySound(sim, FixationSound);
                     }
                     else if (pss[part].field_2743)
                     {

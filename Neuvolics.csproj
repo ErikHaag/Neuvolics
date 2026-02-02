@@ -35,6 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Content\sounds\" />
 	  <Folder Include="Content\textures\atoms\erikhaag\Neuvolics\" />
 	</ItemGroup>
 
