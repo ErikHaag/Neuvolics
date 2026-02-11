@@ -18,7 +18,7 @@ public static class Atoms
             pathToSymbol: atomPath + "carbonic_symbol",
             pathToLightramp: atomPath + "carbonic_lightramp"
         );
-        
+
         Bismuth = Brimstone.API.CreateMetalAtom(
             ID: 116,
             modName: "Neuvolics",
@@ -74,6 +74,12 @@ public static class Atoms
             pathToSymbol: atomPath + "potassium_symbol",
             pathToDiffuse: atomPath + "potassium_diffuse"
         );
+
+        Carbonic.field_2291.field_15 = class_238.field_1989.field_73;
+        Bismuth.field_2291.field_15 = class_238.field_1989.field_73;
+        Cobalt.field_2291.field_15 = class_238.field_1989.field_73;
+        Arsenic.field_2291.field_15 = class_238.field_1989.field_73;
+        Platinum.field_2291.field_15 = class_238.field_1989.field_73;
 
         QApi.AddAtomType(Lithium);
         QApi.AddAtomType(Antimony);
