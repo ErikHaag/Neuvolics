@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<Reference Include="Brimstone">
-		  <HintPath>..\Brimstone\bin\Debug\net452\Brimstone.dll</HintPath>
+			<HintPath>..\Brimstone\bin\Debug\net452\Brimstone.dll</HintPath>
 		</Reference>
 		<Reference Include="MMHOOK_ModdedLightning">
 			<HintPath>$(OpusDir)\MMHOOK_ModdedLightning.dll</HintPath>
@@ -35,8 +35,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Content\sounds\" />
-	  <Folder Include="Content\textures\atoms\erikhaag\Neuvolics\" />
+		<Folder Include="Content\sounds\" />
+		<Folder Include="Content\textures\atoms\erikhaag\Neuvolics\" />
+		<Folder Include="Content\textures\parts\erikhaag\Neuvolics\icons\" />
+		<Folder Include="Content\textures\select\erikhaag\Neuvolics\" />
 	</ItemGroup>
 
 </Project>

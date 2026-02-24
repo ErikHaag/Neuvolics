@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using PartType = class_139;
-using Texture = class_256;
 
 namespace Neuvolics;
 
@@ -19,46 +18,6 @@ public static class Glyphs
     public static PartType Separation;
     public static PartType Fixation;
     public static PartType Consolidation;
-
-    #endregion
-
-    #region Textures
-
-    public static readonly string glyphTexturePath = "textures/parts/erikhaag/Neuvolics/";
-
-    #region Icons
-
-    public static readonly Texture SeparationIcon = Brimstone.API.GetTexture(glyphTexturePath + "icons/separation");
-    public static readonly Texture SeparationIconHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/separation_hover");
-
-    public static readonly Texture FixationIcon = Brimstone.API.GetTexture(glyphTexturePath + "icons/fixation");
-    public static readonly Texture FixationIconHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/fixation_hover");
-
-    #endregion
-
-    public static readonly Texture SeparationBase = Brimstone.API.GetTexture(glyphTexturePath + "Separation/base");
-    public static readonly Texture SeparationAntimonyInput = Brimstone.API.GetTexture(glyphTexturePath + "Separation/antimony_input");
-    public static readonly Texture SeparationPotassiumIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/potassium_output_above_iris");
-    public static readonly Texture SeparationLithiumIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/lithium_output_above_iris");
-    public static readonly Texture SeparationConnectors = Brimstone.API.GetTexture(glyphTexturePath + "Separation/connectors");
-
-    public static readonly Texture FixationBase = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base");
-    public static readonly Texture[] FixationNets = new Texture[] { Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tr"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_bl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_br") };
-    public static readonly Texture FixationConnectors = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/connectors");
-
-    public static readonly Texture AntimonyHoleSymbol = Brimstone.API.GetTexture(glyphTexturePath + "antimony_hole");
-    public static readonly Texture[] PotassiumIris = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_potassium.array", "iris_full_potassium", 16);
-    public static readonly Texture[] LithiumIris = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_lithium.array", "iris_full_lithium", 16);
-
-    public static readonly Texture FixationHoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/separator");
-    public static readonly Texture FixationHoleCarbonicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/carbonic_inactive");
-    public static readonly Texture FixationHoleCarbonicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/carbonic_active");
-    public static readonly Texture FixationHoleFalseNeuvolicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_inactive");
-    public static readonly Texture FixationHoleFalseNeuvolicHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_half_active");
-    public static readonly Texture FixationHoleFalseNeuvolicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_active");
-
-    public static readonly Texture[] AntimonyIris = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_antimony.array", "iris_full_antimony", 16);
-    public static readonly Texture[] TrueNeuvolicIris = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_true_neuvolic.array", "iris_full_true_neuvolics", 16);
 
     #endregion
 
@@ -74,6 +33,9 @@ public static class Glyphs
     public static readonly HexIndex FixationAntimonyIrisHex = new(1, -2);
     public static readonly HexIndex FixationTrueNeuvolicIrisHex = new(-1, 2);
 
+    public static readonly HexIndex ConsolidationHole1Hex = new(0, 1);
+    public static readonly HexIndex ConsolidationHole2Hex = new(1, -1);
+    public static readonly HexIndex ConsolidationAntimonyIrisHex = new(0, 0);
 
     #endregion
 
@@ -86,14 +48,14 @@ public static class Glyphs
 
         SeparationSound = Brimstone.API.GetSound(contentDir, "sounds/separation").method_1087();
         FixationSound = Brimstone.API.GetSound(contentDir, "sounds/fixation").method_1087();
-        //FixationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
+        ConsolidationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
 
         FieldInfo field = typeof(class_11).GetField("field_52", BindingFlags.Static | BindingFlags.NonPublic);
         Dictionary<string, float> volumeDictionary = (Dictionary<string, float>)field.GetValue(null);
 
         volumeDictionary.Add("separation", 0.5f);
         volumeDictionary.Add("fixation", 0.5f);
-        //volumeDictionary.Add("consolidation", 0.5f);
+        volumeDictionary.Add("consolidation", 0.5f);
     }
 
     #endregion
@@ -114,7 +76,7 @@ public static class Glyphs
         IL.SolutionEditorBase.method_1984 += ValueTweakerPhage;
 #endif
         IL.class_201.method_540 += SoundPhage;
-        
+
         // move part
         IL.Solution.method_1939 += OHSUpdatePhage;
         // remove part
@@ -171,7 +133,7 @@ public static class Glyphs
         {
             SeparationSound.field_4062 = false;
             FixationSound.field_4062 = false;
-            //ConsolidationSound.field_4062 = false;
+            ConsolidationSound.field_4062 = false;
         });
     }
 
@@ -247,11 +209,11 @@ public static class Glyphs
             ID: "neuvolics-separation",
             name: "Glyph of Separation",
             description: "The glyph of separation divides an atom of antimony in an atom of potassium and lithium.",
-            cost: 10,
+            cost: 20,
             glow: class_238.field_1989.field_97.field_382,
             stroke: class_238.field_1989.field_97.field_383,
-            icon: SeparationIcon,
-            hoveredIcon: SeparationIconHover,
+            icon: Textures.Icon.Separation,
+            hoveredIcon: Textures.Icon.SeparationHover,
             usedHexes: new HexIndex[] {
                 SeparationPotassiumIrisHex,
                 SeparationHoleHex,
@@ -264,11 +226,11 @@ public static class Glyphs
             ID: "neuvolics-fixation",
             name: "Glyph of Fixation",
             description: "The glyph of fixation consumes a pair of false neuvolics to transmute a true neuvolic to an adjacent form.",
-            cost: 20,
-            glow: class_238.field_1989.field_97.field_382,
+            cost: 15,
+            glow: Textures.Select.ParallelogramGlow,
             stroke: class_238.field_1989.field_97.field_383,
-            icon: FixationIcon,
-            hoveredIcon: FixationIconHover,
+            icon: Textures.Icon.Fixation,
+            hoveredIcon: Textures.Icon.FixationHover,
             usedHexes: new HexIndex[] {
                 FixationHole1Hex,
                 FixationHole2Hex,
@@ -279,31 +241,28 @@ public static class Glyphs
             customPermission: MainClass.FixationPermission
         );
 
-        /*
         Consolidation = Brimstone.API.CreateSimpleGlyph(
             ID: "neuvolics-consolidation",
             name: "Glyph of Consolidation",
             description: "The glyph of consolidation consumes an atom of lithium and potassium to combine them into antimony.",
-            cost: 20,
+            cost: 10,
             glow: class_238.field_1989.field_97.field_382,
             stroke: class_238.field_1989.field_97.field_383,
-            icon: FixationIcon,
-            hoveredIcon: FixationIconHover,
+            icon: Textures.Icon.Consolidation,
+            hoveredIcon: Textures.Icon.ConsolidationHover,
             usedHexes: new HexIndex[] {
-                FixationHole1Hex,
-                FixationHole2Hex,
-                FixationHole3Hex,
-                FixationAntimonyIrisHex,
-                FixationTrueNeuvolicIrisHex
+                ConsolidationHole1Hex,
+                ConsolidationHole2Hex,
+                ConsolidationAntimonyIrisHex
             },
-            customPermission: MainClass.FixationPermission
+            customPermission: MainClass.ConsolidationPermission
         );
-        */
 
         #endregion
 
         QApi.AddPartTypeToPanel(Separation, false);
         QApi.AddPartTypeToPanel(Fixation, false);
+        QApi.AddPartTypeToPanel(Consolidation, false);
 
         #region Glyph renderers
 
@@ -312,18 +271,19 @@ public static class Glyphs
             PartSimState pss = editor.method_507().method_481(part);
             class_236 uco = editor.method_1989(part, pos);
             float time = editor.method_504();
-            Vector2 offset = new(123f, 48f);
+            Vector2 pivot = new(123f, 48f);
 
-            renderer.method_523(SeparationBase, new(0, -1f), offset, 0);
+            Vector2 offset = new(0, -1f);
+            renderer.method_523(Textures.Separation.Base, offset, pivot, 0);
             // input
-            renderer.method_530(SeparationAntimonyInput, SeparationHoleHex, 0);
-            class_135.method_272(AntimonyHoleSymbol, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - AntimonyHoleSymbol.field_2056.ToVector2() / 2).Rounded());
+            renderer.method_530(Textures.Separation.AntimonyInput, SeparationHoleHex, 0);
+            class_135.method_272(Textures.HoleSymbol.Antimony, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - Textures.HoleSymbol.Antimony.field_2056.ToVector2() / 2).Rounded());
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
             Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationPotassiumIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, SeparationPotassiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.PotassiumIrisBase, SeparationPotassiumIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -335,15 +295,15 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(PotassiumIris[irisFrame], SeparationPotassiumIrisHex, Vector2.Zero);
-            renderer.method_528(SeparationPotassiumIrisLip, SeparationPotassiumIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Potassium[irisFrame], SeparationPotassiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.PotassiumIrisLip, SeparationPotassiumIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, SeparationLithiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.LithiumIrisBase, SeparationLithiumIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationLithiumIrisHex).Rotated(uco.field_1985);
@@ -355,14 +315,14 @@ public static class Glyphs
                 }
             }
 
-            renderer.method_529(LithiumIris[irisFrame], SeparationLithiumIrisHex, Vector2.Zero);
-            renderer.method_528(SeparationLithiumIrisLip, SeparationLithiumIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Lithium[irisFrame], SeparationLithiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.LithiumIrisLip, SeparationLithiumIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
-            renderer.method_523(SeparationConnectors, new(0, -1f), offset, 0);
+            renderer.method_523(Textures.Separation.Connectors, offset, pivot, 0);
         });
 
         QApi.AddPartType(Fixation, static (part, pos, editor, renderer) =>
@@ -409,7 +369,7 @@ public static class Glyphs
                 goto FixationDrawing;
             }
 
-            NetRemoval: for (int i = 0; i < nettingHexes.Length; i++)
+        NetRemoval: for (int i = 0; i < nettingHexes.Length; i++)
             {
                 if (OccupiedHexes.Contains(part.method_1184(nettingHexes[i])))
                 {
@@ -459,14 +419,15 @@ public static class Glyphs
 
             atomsPresent >>= 1;
 
-            Vector2 offset = new(122, 190);
-            renderer.method_523(FixationBase, new(-1, -1), offset, 0);
+            Vector2 pivot = new(122f, 191f);
+            Vector2 offset = new(-1f, -1f);
+            renderer.method_523(Textures.Fixation.Base, offset, pivot, 0);
 
             for (int i = 0; i < nettingHexes.Length; i++)
             {
                 if ((invertedNetMask & (1 << i)) == 0)
                 {
-                    renderer.method_523(FixationNets[i], new(-1, -1), offset, 0);
+                    renderer.method_523(Textures.Fixation.Nets[i], offset, pivot, 0);
                 }
             }
 
@@ -474,10 +435,11 @@ public static class Glyphs
             foreach (HexIndex h in holes)
             {
                 renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
-                renderer.method_529(FixationHoleBar, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 4) != 0 ? FixationHoleCarbonicActive : FixationHoleCarbonicInactive, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 1) != 0 ? ((atomsPresent & 2) != 0 ? FixationHoleFalseNeuvolicActive : FixationHoleFalseNeuvolicHalfActive) : FixationHoleFalseNeuvolicInactive, h, Vector2.Zero);
+                renderer.method_529(Textures.Fixation.HoleBar, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 4) != 0 ? Textures.Fixation.HoleCarbonicActive : Textures.Fixation.HoleCarbonicInactive, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 1) != 0 ? ((atomsPresent & 2) != 0 ? Textures.Fixation.HoleFalseNeuvolicActive : Textures.Fixation.HoleFalseNeuvolicHalfActive) : Textures.Fixation.HoleFalseNeuvolicInactive, h, Vector2.Zero);
             }
+
             // irises
             int irisFrame = 15;
             bool afterIrisOpens = false;
@@ -496,7 +458,7 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(AntimonyIris[irisFrame], FixationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Antimony[irisFrame], FixationAntimonyIrisHex, Vector2.Zero);
             renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationAntimonyIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
@@ -516,7 +478,7 @@ public static class Glyphs
                 }
             }
 
-            renderer.method_529(TrueNeuvolicIris[irisFrame], FixationTrueNeuvolicIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.TrueNeuvolic[irisFrame], FixationTrueNeuvolicIrisHex, Vector2.Zero);
             renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationTrueNeuvolicIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
@@ -524,10 +486,74 @@ public static class Glyphs
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
 
-            renderer.method_523(FixationConnectors, new(-1, -1), offset, 0);
+            renderer.method_523(Textures.Fixation.Connectors, offset, pivot, 0);
 
         });
 
+        QApi.AddPartType(Consolidation, static (part, pos, editor, renderer) =>
+        {
+            PartSimState pss = editor.method_507().method_481(part);
+            class_236 uco = editor.method_1989(part, pos);
+            float time = editor.method_504();
+
+            int atomsPresent = 0;
+
+            HexIndex[] holes = new HexIndex[] { ConsolidationHole1Hex, ConsolidationHole2Hex };
+            foreach (HexIndex h in holes)
+            {
+                foreach (Molecule m in editor.method_507().method_483())
+                {
+                    if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
+                    {
+                        AtomType aT = a.field_2275;
+                        if (aT == Atoms.Potassium)
+                        {
+                            atomsPresent |= 1;
+                        }
+                        else if (aT == Atoms.Lithium)
+                        {
+                            atomsPresent |= 2;
+                        }
+                    }
+                }
+            }
+
+            Vector2 pivot = new(41f, 119f);
+            Vector2 offset = new(-1f, -1f);
+            renderer.method_523(Textures.Consolidation.Base, offset, pivot, 0f);
+
+            foreach (HexIndex h in holes)
+            {
+                renderer.method_530(Textures.Consolidation.FalseNeuvolicInput, h, 0f);
+            }
+
+            // iris
+            int irisFrame = 15;
+            bool afterIrisOpens = false;
+            Molecule risingAtom = null;
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(ConsolidationAntimonyIrisHex).Rotated(uco.field_1985);
+
+            renderer.method_528(Textures.Consolidation.IrisBase, ConsolidationAntimonyIrisHex, Vector2.Zero);
+            if (pss.field_2743)
+            {
+                irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
+                afterIrisOpens = time > 0.5f;
+                risingAtom = Molecule.method_1121(pss.field_2744[0]);
+                if (!afterIrisOpens)
+                {
+                    // show atom rising behind iris
+                    Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
+                }
+            }
+            renderer.method_529(Textures.Irises.Antimony[irisFrame], ConsolidationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Consolidation.IrisLip, ConsolidationAntimonyIrisHex, Vector2.Zero);
+            if (pss.field_2743 && afterIrisOpens)
+            {
+                // show atom rising infront of iris
+                Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
+            }
+            renderer.method_523(Textures.Consolidation.Connectors, offset, pivot, 0);
+        });
 
         #endregion
 
@@ -670,6 +696,50 @@ public static class Glyphs
                     {
                         Brimstone.API.AddAtom(sim, part, FixationAntimonyIrisHex, pss[part].field_2744[0]);
                         Brimstone.API.AddAtom(sim, part, FixationTrueNeuvolicIrisHex, pss[part].field_2744[1]);
+                    }
+                }
+                else if (type == Consolidation)
+                {
+                    if (first)
+                    {
+                        HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
+                        HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
+                        HexIndex ia = part.method_1184(ConsolidationAntimonyIrisHex);
+
+                        if (sim.FindAtom(ia).method_1085())
+                        {
+                            // blocked!
+                            continue;
+                        }
+                        if (!sim.FindAtom(h1).method_99(out AtomReference a1) || a1.field_2281 || a1.field_2282)
+                        {
+                            continue;
+                        }
+                        if (!sim.FindAtom(h2).method_99(out AtomReference a2) || a2.field_2281 || a2.field_2282)
+                        {
+                            continue;
+                        }
+
+                        if ((a1.field_2280 != Atoms.Lithium || a2.field_2280 != Atoms.Potassium) && (a1.field_2280 != Atoms.Potassium || a2.field_2280 != Atoms.Lithium))
+                        {
+                            continue;
+                        }
+
+                        Brimstone.API.RemoveAtom(a1);
+                        Brimstone.API.RemoveAtom(a2);
+
+                        Brimstone.API.DrawFallingAtom(seb, a1);
+                        Brimstone.API.DrawFallingAtom(seb, a2);
+
+                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationAntimonyIrisHex);
+                        pss[part].field_2743 = true;
+                        pss[part].field_2744 = new AtomType[1] { Atoms.Antimony };
+
+                        Brimstone.API.PlaySound(sim, ConsolidationSound);
+                    }
+                    else if (pss[part].field_2743)
+                    {
+                        Brimstone.API.AddAtom(sim, part, ConsolidationAntimonyIrisHex, pss[part].field_2744[0]);
                     }
                 }
             nextGlyph:;
