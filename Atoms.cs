@@ -16,7 +16,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Carbonic",
             pathToSymbol: atomPath + "carbonic_symbol",
-            pathToLightramp: atomPath + "carbonic_lightramp"
+            pathToLightramp: atomPath + "carbonic_lightramp",
+            pathToRimlight: atomPath + "carbonic_rimlight"
         );
 
         Bismuth = Brimstone.API.CreateMetalAtom(
@@ -24,7 +25,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Bismuth",
             pathToSymbol: atomPath + "bismuth_symbol",
-            pathToLightramp: atomPath + "bismuth_lightramp"
+            pathToLightramp: atomPath + "bismuth_lightramp",
+            pathToRimlight: atomPath + "bismuth_rimlight"
         );
 
         Cobalt = Brimstone.API.CreateMetalAtom(
@@ -32,7 +34,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Cobalt",
             pathToSymbol: atomPath + "cobalt_symbol",
-            pathToLightramp: atomPath + "cobalt_lightramp"
+            pathToLightramp: atomPath + "cobalt_lightramp",
+            pathToRimlight: atomPath + "cobalt_rimlight"
         );
 
         Arsenic = Brimstone.API.CreateMetalAtom(
@@ -40,7 +43,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Arsenic",
             pathToSymbol: atomPath + "arsenic_symbol",
-            pathToLightramp: atomPath + "arsenic_lightramp"
+            pathToLightramp: atomPath + "arsenic_lightramp",
+            pathToRimlight: atomPath + "arsenic_rimlight"
         );
 
         Platinum = Brimstone.API.CreateMetalAtom(
@@ -48,7 +52,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Platinum",
             pathToSymbol: atomPath + "platinum_symbol",
-            pathToLightramp: atomPath + "platinum_lightramp"
+            pathToLightramp: atomPath + "platinum_lightramp",
+            pathToRimlight: atomPath + "platinum_rimlight"
         );
 
         Lithium = Brimstone.API.CreateNormalAtom(
@@ -56,7 +61,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Lithium",
             pathToSymbol: atomPath + "lithium_symbol",
-            pathToDiffuse: atomPath + "lithium_diffuse"
+            pathToDiffuse: atomPath + "lithium_diffuse",
+            pathToShade: atomPath + "lithium_shade"
         );
 
         Antimony = Brimstone.API.CreateNormalAtom(
@@ -64,7 +70,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Antimony",
             pathToSymbol: atomPath + "antimony_symbol",
-            pathToDiffuse: atomPath + "antimony_diffuse"
+            pathToDiffuse: atomPath + "antimony_diffuse",
+            pathToShade: atomPath + "antimony_shade"
         );
 
         Potassium = Brimstone.API.CreateNormalAtom(
@@ -72,14 +79,9 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Potassium",
             pathToSymbol: atomPath + "potassium_symbol",
-            pathToDiffuse: atomPath + "potassium_diffuse"
+            pathToDiffuse: atomPath + "potassium_diffuse",
+            pathToShade: atomPath + "potassium_shade"
         );
-
-        Carbonic.field_2291.field_15 = class_238.field_1989.field_73;
-        Bismuth.field_2291.field_15 = class_238.field_1989.field_73;
-        Cobalt.field_2291.field_15 = class_238.field_1989.field_73;
-        Arsenic.field_2291.field_15 = class_238.field_1989.field_73;
-        Platinum.field_2291.field_15 = class_238.field_1989.field_73;
 
         QApi.AddAtomType(Lithium);
         QApi.AddAtomType(Antimony);

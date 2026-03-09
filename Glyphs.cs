@@ -210,8 +210,8 @@ public static class Glyphs
             name: "Glyph of Separation",
             description: "The glyph of separation divides an atom of antimony in an atom of potassium and lithium.",
             cost: 20,
-            glow: class_238.field_1989.field_97.field_382,
-            stroke: class_238.field_1989.field_97.field_383,
+            glow: Textures.Select.TrilineGlow,
+            stroke: Textures.Select.TrilineStroke,
             icon: Textures.Icon.Separation,
             hoveredIcon: Textures.Icon.SeparationHover,
             usedHexes: new HexIndex[] {
@@ -228,7 +228,7 @@ public static class Glyphs
             description: "The glyph of fixation consumes a pair of false neuvolics to transmute a true neuvolic to an adjacent form.",
             cost: 15,
             glow: Textures.Select.ParallelogramGlow,
-            stroke: class_238.field_1989.field_97.field_383,
+            stroke: Textures.Select.ParallelogramStroke,
             icon: Textures.Icon.Fixation,
             hoveredIcon: Textures.Icon.FixationHover,
             usedHexes: new HexIndex[] {
@@ -246,8 +246,8 @@ public static class Glyphs
             name: "Glyph of Consolidation",
             description: "The glyph of consolidation consumes an atom of lithium and potassium to combine them into antimony.",
             cost: 10,
-            glow: class_238.field_1989.field_97.field_382,
-            stroke: class_238.field_1989.field_97.field_383,
+            glow: Textures.Select.BendGlow,
+            stroke: Textures.Select.BendStroke,
             icon: Textures.Icon.Consolidation,
             hoveredIcon: Textures.Icon.ConsolidationHover,
             usedHexes: new HexIndex[] {
@@ -425,7 +425,7 @@ public static class Glyphs
 
             for (int i = 0; i < nettingHexes.Length; i++)
             {
-                if ((invertedNetMask & (1 << i)) == 0)
+                if (((invertedNetMask >> i) & 1) == 0)
                 {
                     renderer.method_523(Textures.Fixation.Nets[i], offset, pivot, 0);
                 }

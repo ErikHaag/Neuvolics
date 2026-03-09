@@ -23,6 +23,11 @@ public static class Textures
     public static class Select
     {
         public static readonly Texture ParallelogramGlow = Brimstone.API.GetTexture(selectTexturePath + "parallelogram_3_glow");
+        public static readonly Texture ParallelogramStroke = Brimstone.API.GetTexture(selectTexturePath + "parallelogram_3_stroke");
+        public static readonly Texture TrilineGlow = Brimstone.API.GetTexture(selectTexturePath + "triline_glow");
+        public static readonly Texture TrilineStroke = Brimstone.API.GetTexture(selectTexturePath + "triline_stroke");
+        public static readonly Texture BendGlow = Brimstone.API.GetTexture(selectTexturePath + "bend_glow");
+        public static readonly Texture BendStroke = Brimstone.API.GetTexture(selectTexturePath + "bend_stroke");
     }
 
     public static class Separation
