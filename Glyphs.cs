@@ -31,7 +31,7 @@ public static class Glyphs
     public static readonly HexIndex FixationHole2Hex = new(0, 0);
     public static readonly HexIndex FixationHole3Hex = new(1, 0);
     public static readonly HexIndex FixationAntimonyIrisHex = new(1, -2);
-    public static readonly HexIndex FixationTrueNeuvolicIrisHex = new(-1, 2);
+    public static readonly HexIndex FixationNeumetalIrisHex = new(-1, 2);
 
     public static readonly HexIndex ConsolidationHole1Hex = new(0, 1);
     public static readonly HexIndex ConsolidationHole2Hex = new(1, -1);
@@ -225,7 +225,7 @@ public static class Glyphs
         Fixation = Brimstone.API.CreateSimpleGlyph(
             ID: "neuvolics-fixation",
             name: "Glyph of Fixation",
-            description: "The glyph of fixation consumes a pair of false neuvolics to transmute a true neuvolic to an adjacent form.",
+            description: "The glyph of fixation consumes a pair of the same volics to transmute a neumetal to an adjacent form.",
             cost: 15,
             glow: Textures.Select.ParallelogramGlow,
             stroke: Textures.Select.ParallelogramStroke,
@@ -236,7 +236,7 @@ public static class Glyphs
                 FixationHole2Hex,
                 FixationHole3Hex,
                 FixationAntimonyIrisHex,
-                FixationTrueNeuvolicIrisHex
+                FixationNeumetalIrisHex
             },
             customPermission: MainClass.FixationPermission
         );
@@ -396,7 +396,7 @@ public static class Glyphs
                         {
                             atomsPresent |= (atomsPresent & 2) != 0 ? 4 : 2;
                         }
-                        else if (API.GetNeuvolicIndex(aT) != -1)
+                        else if (API.GetNeumetalIndex(aT) != -1)
                         {
                             atomsPresent |= 8;
                         }
@@ -436,8 +436,8 @@ public static class Glyphs
             {
                 renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
                 renderer.method_529(Textures.Fixation.HoleBar, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 4) != 0 ? Textures.Fixation.HoleCarbonicActive : Textures.Fixation.HoleCarbonicInactive, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 1) != 0 ? ((atomsPresent & 2) != 0 ? Textures.Fixation.HoleFalseNeuvolicActive : Textures.Fixation.HoleFalseNeuvolicHalfActive) : Textures.Fixation.HoleFalseNeuvolicInactive, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 4) != 0 ? Textures.Fixation.HoleNeumetalInactive : Textures.Fixation.HoleNeumetalActive, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 1) != 0 ? ((atomsPresent & 2) != 0 ? Textures.Fixation.HoleVolicInactive : Textures.Fixation.HoleVolicHalfActive) : Textures.Fixation.HoleVolicActive, h, Vector2.Zero);
             }
 
             // irises
@@ -466,10 +466,10 @@ public static class Glyphs
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationTrueNeuvolicIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationNeumetalIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
-                risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationTrueNeuvolicIrisHex).Rotated(uco.field_1985);
+                risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationNeumetalIrisHex).Rotated(uco.field_1985);
                 risingAtom = Molecule.method_1121(pss.field_2744[1]);
                 if (!afterIrisOpens)
                 {
@@ -478,8 +478,8 @@ public static class Glyphs
                 }
             }
 
-            renderer.method_529(Textures.Irises.TrueNeuvolic[irisFrame], FixationTrueNeuvolicIrisHex, Vector2.Zero);
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationTrueNeuvolicIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Neumetal[irisFrame], FixationNeumetalIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationNeumetalIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
@@ -524,7 +524,7 @@ public static class Glyphs
 
             foreach (HexIndex h in holes)
             {
-                renderer.method_530(Textures.Consolidation.FalseNeuvolicInput, h, 0f);
+                renderer.method_530(Textures.Consolidation.VolicInput, h, 0f);
             }
 
             // iris
@@ -617,7 +617,7 @@ public static class Glyphs
                         HexIndex hc = part.method_1184(FixationHole2Hex);
                         HexIndex hr = part.method_1184(FixationHole3Hex);
                         HexIndex ia = part.method_1184(FixationAntimonyIrisHex);
-                        HexIndex it = part.method_1184(FixationTrueNeuvolicIrisHex);
+                        HexIndex it = part.method_1184(FixationNeumetalIrisHex);
 
                         if (sim.FindAtom(ia).method_1085() || sim.FindAtom(it).method_1085())
                         {
@@ -664,7 +664,7 @@ public static class Glyphs
                                 // second true neuvolic, or invalid atom
                                 goto nextGlyph;
                             }
-                            trueNeuIndex = API.GetNeuvolicIndex(r.field_2280);
+                            trueNeuIndex = API.GetNeumetalIndex(r.field_2280);
                             if (trueNeuIndex == -1)
                             {
                                 // invalid atom present
@@ -685,7 +685,7 @@ public static class Glyphs
                         Brimstone.API.DrawFallingAtom(seb, falseNeuvolic2);
 
                         Brimstone.API.AddSmallCollider(sim, part, FixationAntimonyIrisHex);
-                        Brimstone.API.AddSmallCollider(sim, part, FixationTrueNeuvolicIrisHex);
+                        Brimstone.API.AddSmallCollider(sim, part, FixationNeumetalIrisHex);
 
                         pss[part].field_2743 = true;
                         pss[part].field_2744 = new AtomType[2] { Atoms.Antimony, API.GetNeuvolicAtom(trueNeuIndex + delta) };
@@ -695,7 +695,7 @@ public static class Glyphs
                     else if (pss[part].field_2743)
                     {
                         Brimstone.API.AddAtom(sim, part, FixationAntimonyIrisHex, pss[part].field_2744[0]);
-                        Brimstone.API.AddAtom(sim, part, FixationTrueNeuvolicIrisHex, pss[part].field_2744[1]);
+                        Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss[part].field_2744[1]);
                     }
                 }
                 else if (type == Consolidation)

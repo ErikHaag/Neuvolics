@@ -47,17 +47,17 @@ public static class Textures
         public static readonly Texture[] Nets = new Texture[] { Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tr"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_bl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_br") };
         public static readonly Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/connectors");
         public static readonly Texture HoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/separator");
-        public static readonly Texture HoleCarbonicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/carbonic_inactive");
-        public static readonly Texture HoleCarbonicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/carbonic_active");
-        public static readonly Texture HoleFalseNeuvolicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_inactive");
-        public static readonly Texture HoleFalseNeuvolicHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_half_active");
-        public static readonly Texture HoleFalseNeuvolicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/false_neuvolic_active");
+        public static readonly Texture HoleNeumetalInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/neumetal_inactive");
+        public static readonly Texture HoleNeumetalActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/neumetal_active");
+        public static readonly Texture HoleVolicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_inactive");
+        public static readonly Texture HoleVolicHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_half_active");
+        public static readonly Texture HoleVolicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_active");
     }
 
     public static class Consolidation
     {
         public static Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/base");
-        public static Texture FalseNeuvolicInput = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/false_neuvolic_input");
+        public static Texture VolicInput = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/volic_input");
         public static Texture IrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_under_iris");
         public static Texture IrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_above_iris");
         public static Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/connectors");
@@ -71,7 +71,7 @@ public static class Textures
     public static class Irises
     {
         public static readonly Texture[] Antimony = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_antimony.array", "iris_full_antimony", 16);
-        public static readonly Texture[] TrueNeuvolic = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_true_neuvolic.array", "iris_full_true_neuvolics", 16);
+        public static readonly Texture[] Neumetal = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_neumetal.array", "iris_full_neumetal", 16);
         public static readonly Texture[] Potassium = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_potassium.array", "iris_full_potassium", 16);
         public static readonly Texture[] Lithium = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_lithium.array", "iris_full_lithium", 16);
     }
