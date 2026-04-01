@@ -43,8 +43,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Taceum",
             pathToSymbol: atomPath + "taceum_symbol",
-            pathToLightramp: atomPath + "arsenic_lightramp",
-            pathToRimlight: atomPath + "arsenic_rimlight"
+            pathToLightramp: atomPath + "taceum_lightramp",
+            pathToRimlight: atomPath + "taceum_rimlight"
         );
 
         Hestium = Brimstone.API.CreateMetalAtom(
@@ -70,8 +70,8 @@ public static class Atoms
             modName: "Neuvolics",
             name: "Zephiron",
             pathToSymbol: atomPath + "zephiron_symbol",
-            pathToDiffuse: atomPath + "antimony_diffuse",
-            pathToShade: atomPath + "antimony_shade"
+            pathToDiffuse: atomPath + "zephiron_diffuse",
+            pathToShade: atomPath + "zephiron_shade"
         );
 
         Gelaron = Brimstone.API.CreateNormalAtom(

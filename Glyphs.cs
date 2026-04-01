@@ -645,7 +645,7 @@ public static class Glyphs
                             continue;
                         }
 
-                        // an unheld, elemental antimony atom is above the hole, and neither iris is covered
+                        // an unheld, elemental zephiron atom is above the hole, and neither iris is covered
                         Brimstone.API.RemoveAtom(holeAtom);
                         Brimstone.API.DrawFallingAtom(seb, holeAtom);
 
