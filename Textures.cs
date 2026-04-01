@@ -18,6 +18,9 @@ public static class Textures
 
         public static readonly Texture Consolidation = Brimstone.API.GetTexture(glyphTexturePath + "icons/consolidation");
         public static readonly Texture ConsolidationHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/consolidation_hover");
+
+        public static readonly Texture Putrefaction = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction");
+        public static readonly Texture PutrefactionHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction_hover");
     }
 
     public static class Select
@@ -33,11 +36,11 @@ public static class Textures
     public static class Separation
     {
         public static readonly Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Separation/base");
-        public static readonly Texture AntimonyInput = Brimstone.API.GetTexture(glyphTexturePath + "Separation/antimony_input");
-        public static readonly Texture PotassiumIrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Separation/potassium_output_under_iris");
-        public static readonly Texture PotassiumIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/potassium_output_above_iris");
-        public static readonly Texture LithiumIrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Separation/lithium_output_under_iris");
-        public static readonly Texture LithiumIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/lithium_output_above_iris");
+        public static readonly Texture ZephironInput = Brimstone.API.GetTexture(glyphTexturePath + "Separation/zephiron_input");
+        public static readonly Texture FrixonIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/frixon_output_above_iris");
+        public static readonly Texture FrixonIrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Separation/frixon_output_under_iris");
+        public static readonly Texture GelaronIrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Separation/gelaron_output_under_iris");
+        public static readonly Texture GelaronIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Separation/gelaron_output_above_iris");
         public static readonly Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Separation/connectors");
     }
 
@@ -61,18 +64,34 @@ public static class Textures
         public static Texture IrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_under_iris");
         public static Texture IrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_above_iris");
         public static Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/connectors");
+        public static Texture HoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/separator");
+        public static Texture HoleFrixonActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_active");
+        public static Texture HoleFrixonInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_inactive");
+        public static Texture HoleGelaronActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_active");
+        public static Texture HoleGelaronInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_inactive");
+    }
+
+    public static class Putrefaction
+    {
+        public static readonly Texture Base = class_238.field_1989.field_90.field_213;
     }
 
     public static class HoleSymbol
     {
-        public static readonly Texture Antimony = Brimstone.API.GetTexture(glyphTexturePath + "antimony_hole");
+        public static readonly Texture Zephiron = Brimstone.API.GetTexture(glyphTexturePath + "zephiron_hole");
+        public static readonly Texture Volic = Brimstone.API.GetTexture(glyphTexturePath + "volic_hole");
+    }
+
+    public static class BowlSymbol
+    {
+        public static readonly Texture Neumetal = Brimstone.API.GetTexture(glyphTexturePath + "neumetal_bowl");
     }
 
     public static class Irises
     {
-        public static readonly Texture[] Antimony = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_antimony.array", "iris_full_antimony", 16);
+        public static readonly Texture[] Frixon = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_frixon.array", "iris_full_frixon", 16);
         public static readonly Texture[] Neumetal = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_neumetal.array", "iris_full_neumetal", 16);
-        public static readonly Texture[] Potassium = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_potassium.array", "iris_full_potassium", 16);
-        public static readonly Texture[] Lithium = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_lithium.array", "iris_full_lithium", 16);
+        public static readonly Texture[] Gelaron = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_gelaron.array", "iris_full_gelaron", 16);
+        public static readonly Texture[] Zephiron = Brimstone.API.GetAnimation(glyphTexturePath + "iris_full_zephiron.array", "iris_full_zephiron", 16);
     }
 }

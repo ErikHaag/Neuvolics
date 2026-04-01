@@ -8,6 +8,7 @@ public class MainClass : QuintessentialMod
     public const string SeparationPermission = "Neuvolics:separation";
     public const string FixationPermission = "Neuvolics:fixation";
     public const string ConsolidationPermission = "Neuvolics:consolidation";
+    public const string PutrefactionPermission = "Neuvolics:putrefaction";
 
     public override void Load()
     {
@@ -26,6 +27,7 @@ public class MainClass : QuintessentialMod
         QApi.AddPuzzlePermission(SeparationPermission, "Glyph of Separation", "Neuvolics");
         QApi.AddPuzzlePermission(FixationPermission, "Glyph of Fixation", "Neuvolics");
         QApi.AddPuzzlePermission(ConsolidationPermission, "Glyph of Consolidation", "Neuvolics");
+        QApi.AddPuzzlePermission(PutrefactionPermission, "Glyph of Putrefaction", "Neuvolics");
     }
 
     public override void PostLoad()

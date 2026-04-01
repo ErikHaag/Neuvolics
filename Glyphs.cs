@@ -18,24 +18,29 @@ public static class Glyphs
     public static PartType Separation;
     public static PartType Fixation;
     public static PartType Consolidation;
+    public static PartType Putrefaction;
 
     #endregion
 
     #region Hexes
 
     public static readonly HexIndex SeparationHoleHex = new(0, 0);
-    public static readonly HexIndex SeparationPotassiumIrisHex = new(1, 0);
-    public static readonly HexIndex SeparationLithiumIrisHex = new(-1, 0);
+    public static readonly HexIndex SeparationGelaronIrisHex = new(1, 0);
+    public static readonly HexIndex SeparationFrixonIrisHex = new(-1, 0);
 
     public static readonly HexIndex FixationHole1Hex = new(-1, 0);
     public static readonly HexIndex FixationHole2Hex = new(0, 0);
     public static readonly HexIndex FixationHole3Hex = new(1, 0);
-    public static readonly HexIndex FixationAntimonyIrisHex = new(1, -2);
+    public static readonly HexIndex FixationZephironIrisHex = new(1, -2);
     public static readonly HexIndex FixationNeumetalIrisHex = new(-1, 2);
 
     public static readonly HexIndex ConsolidationHole1Hex = new(0, 1);
     public static readonly HexIndex ConsolidationHole2Hex = new(1, -1);
-    public static readonly HexIndex ConsolidationAntimonyIrisHex = new(0, 0);
+    public static readonly HexIndex ConsolidationZephironIrisHex = new(0, 0);
+
+    public static readonly HexIndex PutrefactionBowlHex = new(1, 0);
+    public static readonly HexIndex PutrefactionHole1Hex = new(0, -1);
+    public static readonly HexIndex PutrefactionHole2Hex = new(-1, 1);
 
     #endregion
 
@@ -208,16 +213,16 @@ public static class Glyphs
         Separation = Brimstone.API.CreateSimpleGlyph(
             ID: "neuvolics-separation",
             name: "Glyph of Separation",
-            description: "The glyph of separation divides an atom of antimony in an atom of potassium and lithium.",
+            description: "The glyph of separation divides an atom of zephiron in an atom of frixon and gelaron.",
             cost: 20,
             glow: Textures.Select.TrilineGlow,
             stroke: Textures.Select.TrilineStroke,
             icon: Textures.Icon.Separation,
             hoveredIcon: Textures.Icon.SeparationHover,
             usedHexes: new HexIndex[] {
-                SeparationPotassiumIrisHex,
+                SeparationGelaronIrisHex,
                 SeparationHoleHex,
-                SeparationLithiumIrisHex
+                SeparationFrixonIrisHex
             },
             customPermission: MainClass.SeparationPermission
         );
@@ -235,7 +240,7 @@ public static class Glyphs
                 FixationHole1Hex,
                 FixationHole2Hex,
                 FixationHole3Hex,
-                FixationAntimonyIrisHex,
+                FixationZephironIrisHex,
                 FixationNeumetalIrisHex
             },
             customPermission: MainClass.FixationPermission
@@ -244,7 +249,7 @@ public static class Glyphs
         Consolidation = Brimstone.API.CreateSimpleGlyph(
             ID: "neuvolics-consolidation",
             name: "Glyph of Consolidation",
-            description: "The glyph of consolidation consumes an atom of lithium and potassium to combine them into antimony.",
+            description: "The glyph of consolidation consumes an atom of frixon and gelaron to combine them into zephiron.",
             cost: 10,
             glow: Textures.Select.BendGlow,
             stroke: Textures.Select.BendStroke,
@@ -253,9 +258,28 @@ public static class Glyphs
             usedHexes: new HexIndex[] {
                 ConsolidationHole1Hex,
                 ConsolidationHole2Hex,
-                ConsolidationAntimonyIrisHex
+                ConsolidationZephironIrisHex
             },
             customPermission: MainClass.ConsolidationPermission
+        );
+
+        Putrefaction = Brimstone.API.CreateSimpleGlyph(
+            ID: "neuvolics-putrefaction",
+            name: "Glyph of Putrefaction",
+            description: "The glyph of putrefaction consumes one or two atoms of frixon or gelaron to transmute a neumetal to an adjacent form.",
+            cost: 10,
+            glow: class_238.field_1989.field_97.field_384,
+            stroke: class_238.field_1989.field_97.field_385,
+            icon: Textures.Icon.Putrefaction,
+            hoveredIcon: Textures.Icon.PutrefactionHover,
+            usedHexes: new HexIndex[]
+            {
+                new(0,0),
+                PutrefactionBowlHex,
+                PutrefactionHole1Hex,
+                PutrefactionHole2Hex
+            },
+            customPermission: MainClass.PutrefactionPermission
         );
 
         #endregion
@@ -263,6 +287,7 @@ public static class Glyphs
         QApi.AddPartTypeToPanel(Separation, false);
         QApi.AddPartTypeToPanel(Fixation, false);
         QApi.AddPartTypeToPanel(Consolidation, false);
+        QApi.AddPartTypeToPanel(Putrefaction, false);
 
         #region Glyph renderers
 
@@ -276,14 +301,14 @@ public static class Glyphs
             Vector2 offset = new(0, -1f);
             renderer.method_523(Textures.Separation.Base, offset, pivot, 0);
             // input
-            renderer.method_530(Textures.Separation.AntimonyInput, SeparationHoleHex, 0);
-            class_135.method_272(Textures.HoleSymbol.Antimony, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - Textures.HoleSymbol.Antimony.field_2056.ToVector2() / 2).Rounded());
+            renderer.method_530(Textures.Separation.ZephironInput, SeparationHoleHex, 0);
+            class_135.method_272(Textures.HoleSymbol.Zephiron, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - Textures.HoleSymbol.Zephiron.field_2056.ToVector2() / 2).Rounded());
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
-            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationPotassiumIrisHex).Rotated(uco.field_1985);
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationGelaronIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(Textures.Separation.PotassiumIrisBase, SeparationPotassiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.GelaronIrisBase, SeparationGelaronIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -295,18 +320,18 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(Textures.Irises.Potassium[irisFrame], SeparationPotassiumIrisHex, Vector2.Zero);
-            renderer.method_528(Textures.Separation.PotassiumIrisLip, SeparationPotassiumIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Gelaron[irisFrame], SeparationGelaronIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.GelaronIrisLip, SeparationGelaronIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
 
-            renderer.method_528(Textures.Separation.LithiumIrisBase, SeparationLithiumIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.FrixonIrisBase, SeparationFrixonIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
-                risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationLithiumIrisHex).Rotated(uco.field_1985);
+                risingOffset = uco.field_1984 + class_187.field_1742.method_492(SeparationFrixonIrisHex).Rotated(uco.field_1985);
                 risingAtom = Molecule.method_1121(pss.field_2744[1]);
                 if (!afterIrisOpens)
                 {
@@ -315,8 +340,8 @@ public static class Glyphs
                 }
             }
 
-            renderer.method_529(Textures.Irises.Lithium[irisFrame], SeparationLithiumIrisHex, Vector2.Zero);
-            renderer.method_528(Textures.Separation.LithiumIrisLip, SeparationLithiumIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Frixon[irisFrame], SeparationFrixonIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Separation.FrixonIrisLip, SeparationFrixonIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
@@ -388,11 +413,11 @@ public static class Glyphs
                     if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
                     {
                         AtomType aT = a.field_2275;
-                        if (aT == Atoms.Potassium)
+                        if (aT == Atoms.Gelaron)
                         {
                             atomsPresent |= (atomsPresent & 1) != 0 ? 4 : 1;
                         }
-                        else if (aT == Atoms.Lithium)
+                        else if (aT == Atoms.Frixon)
                         {
                             atomsPresent |= (atomsPresent & 2) != 0 ? 4 : 2;
                         }
@@ -407,7 +432,7 @@ public static class Glyphs
             switch (atomsPresent & 3)
             {
                 case 3:
-                    // both potassium and lithium are present, invalid.
+                    // both frixon and gelaron are present, invalid.
                     atomsPresent &= ~3;
                     break;
                 case 1:
@@ -444,9 +469,9 @@ public static class Glyphs
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
-            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationAntimonyIrisHex).Rotated(uco.field_1985);
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationZephironIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationZephironIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -458,8 +483,8 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(Textures.Irises.Antimony[irisFrame], FixationAntimonyIrisHex, Vector2.Zero);
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Zephiron[irisFrame], FixationZephironIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationZephironIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
@@ -506,11 +531,11 @@ public static class Glyphs
                     if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
                     {
                         AtomType aT = a.field_2275;
-                        if (aT == Atoms.Potassium)
+                        if (aT == Atoms.Gelaron)
                         {
                             atomsPresent |= 1;
                         }
-                        else if (aT == Atoms.Lithium)
+                        else if (aT == Atoms.Frixon)
                         {
                             atomsPresent |= 2;
                         }
@@ -525,15 +550,18 @@ public static class Glyphs
             foreach (HexIndex h in holes)
             {
                 renderer.method_530(Textures.Consolidation.VolicInput, h, 0f);
+                renderer.method_529(Textures.Consolidation.HoleBar, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 1) == 0 ? Textures.Consolidation.HoleGelaronActive : Textures.Consolidation.HoleGelaronInactive, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 2) == 0 ? Textures.Consolidation.HoleFrixonActive : Textures.Consolidation.HoleFrixonInactive, h, Vector2.Zero);
             }
 
             // iris
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
-            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(ConsolidationAntimonyIrisHex).Rotated(uco.field_1985);
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(ConsolidationZephironIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(Textures.Consolidation.IrisBase, ConsolidationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Consolidation.IrisBase, ConsolidationZephironIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -545,14 +573,40 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(Textures.Irises.Antimony[irisFrame], ConsolidationAntimonyIrisHex, Vector2.Zero);
-            renderer.method_528(Textures.Consolidation.IrisLip, ConsolidationAntimonyIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Zephiron[irisFrame], ConsolidationZephironIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Consolidation.IrisLip, ConsolidationZephironIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
             renderer.method_523(Textures.Consolidation.Connectors, offset, pivot, 0);
+        });
+
+        QApi.AddPartType(Putrefaction, static (part, pos, editor, renderer) =>
+        {
+            //PartSimState pss = editor.method_507().method_481(part);
+            //class_236 uco = editor.method_1989(part, pos);
+            //float time = editor.method_504();
+
+            Vector2 pivot = new(83f, 119f);
+            Vector2 offset = new(0, -1f);
+            renderer.method_523(Textures.Putrefaction.Base, offset, pivot, 0);
+
+            HexIndex[] holes = new HexIndex[]
+            {
+                PutrefactionHole1Hex, PutrefactionHole2Hex
+            };
+
+            foreach (HexIndex h in holes)
+            {
+                renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
+                renderer.method_529(Textures.HoleSymbol.Volic, h, Vector2.Zero);
+            }
+
+            renderer.method_530(class_238.field_1989.field_90.field_170, PutrefactionBowlHex, 0);
+            renderer.method_529(Textures.BowlSymbol.Neumetal, PutrefactionBowlHex, Vector2.Zero);
+
         });
 
         #endregion
@@ -571,10 +625,10 @@ public static class Glyphs
                     if (first)
                     {
                         HexIndex h = part.method_1184(SeparationHoleHex);
-                        HexIndex il = part.method_1184(SeparationLithiumIrisHex);
-                        HexIndex ip = part.method_1184(SeparationPotassiumIrisHex);
+                        HexIndex iF = part.method_1184(SeparationFrixonIrisHex);
+                        HexIndex iP = part.method_1184(SeparationGelaronIrisHex);
 
-                        if (sim.FindAtom(il).method_1085() || sim.FindAtom(ip).method_1085())
+                        if (sim.FindAtom(iF).method_1085() || sim.FindAtom(iP).method_1085())
                         {
                             // blocked!
                             continue;
@@ -586,7 +640,7 @@ public static class Glyphs
                             continue;
                         }
 
-                        if (holeAtom.field_2280 != Atoms.Antimony || holeAtom.field_2281 || holeAtom.field_2282)
+                        if (holeAtom.field_2280 != Atoms.Zephiron || holeAtom.field_2281 || holeAtom.field_2282)
                         {
                             continue;
                         }
@@ -595,43 +649,43 @@ public static class Glyphs
                         Brimstone.API.RemoveAtom(holeAtom);
                         Brimstone.API.DrawFallingAtom(seb, holeAtom);
 
-                        Brimstone.API.AddSmallCollider(sim, part, SeparationPotassiumIrisHex);
-                        Brimstone.API.AddSmallCollider(sim, part, SeparationLithiumIrisHex);
+                        Brimstone.API.AddSmallCollider(sim, part, SeparationGelaronIrisHex);
+                        Brimstone.API.AddSmallCollider(sim, part, SeparationFrixonIrisHex);
 
                         pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[2] { Atoms.Potassium, Atoms.Lithium };
+                        pss[part].field_2744 = new AtomType[2] { Atoms.Gelaron, Atoms.Frixon };
 
                         Brimstone.API.PlaySound(sim, SeparationSound);
                     }
                     else if (pss[part].field_2743)
                     {
-                        Brimstone.API.AddAtom(sim, part, SeparationPotassiumIrisHex, pss[part].field_2744[0]);
-                        Brimstone.API.AddAtom(sim, part, SeparationLithiumIrisHex, pss[part].field_2744[1]);
+                        Brimstone.API.AddAtom(sim, part, SeparationGelaronIrisHex, pss[part].field_2744[0]);
+                        Brimstone.API.AddAtom(sim, part, SeparationFrixonIrisHex, pss[part].field_2744[1]);
                     }
                 }
                 else if (type == Fixation)
                 {
                     if (first)
                     {
-                        HexIndex hl = part.method_1184(FixationHole1Hex);
-                        HexIndex hc = part.method_1184(FixationHole2Hex);
-                        HexIndex hr = part.method_1184(FixationHole3Hex);
-                        HexIndex ia = part.method_1184(FixationAntimonyIrisHex);
-                        HexIndex it = part.method_1184(FixationNeumetalIrisHex);
+                        HexIndex hLeft = part.method_1184(FixationHole1Hex);
+                        HexIndex hCenter = part.method_1184(FixationHole2Hex);
+                        HexIndex hRight = part.method_1184(FixationHole3Hex);
+                        HexIndex iZ = part.method_1184(FixationZephironIrisHex);
+                        HexIndex iN = part.method_1184(FixationNeumetalIrisHex);
 
-                        if (sim.FindAtom(ia).method_1085() || sim.FindAtom(it).method_1085())
+                        if (sim.FindAtom(iZ).method_1085() || sim.FindAtom(iN).method_1085())
                         {
                             // blocked!
                             continue;
                         }
 
-                        AtomReference trueNeuvolic = null;
-                        AtomReference falseNeuvolic1 = null;
-                        AtomReference falseNeuvolic2 = null;
+                        AtomReference neumetal = null;
+                        AtomReference volic1 = null;
+                        AtomReference volic2 = null;
 
-                        int trueNeuIndex = -1;
+                        int neumetalIndex = -1;
 
-                        HexIndex[] holes = new HexIndex[] { hl, hc, hr };
+                        HexIndex[] holes = new HexIndex[] { hLeft, hCenter, hRight };
                         foreach (HexIndex h in holes)
                         {
                             if (!sim.FindAtom(h).method_99(out AtomReference r) || r.field_2281 || r.field_2282)
@@ -639,62 +693,62 @@ public static class Glyphs
                                 // atom not present, not a singleton, or is held
                                 goto nextGlyph;
                             }
-                            if (r.field_2280 == Atoms.Potassium || r.field_2280 == Atoms.Lithium)
+                            if (r.field_2280 == Atoms.Gelaron || r.field_2280 == Atoms.Frixon)
                             {
-                                if (falseNeuvolic1 == null)
+                                if (volic1 == null)
                                 {
-                                    falseNeuvolic1 = r;
+                                    volic1 = r;
                                     continue;
                                 }
-                                if (r.field_2280 != falseNeuvolic1.field_2280)
+                                if (r.field_2280 != volic1.field_2280)
                                 {
                                     // second FN is different from the first
                                     goto nextGlyph;
                                 }
-                                if (falseNeuvolic2 == null)
+                                if (volic2 == null)
                                 {
-                                    falseNeuvolic2 = r;
+                                    volic2 = r;
                                     continue;
                                 }
 
                                 goto nextGlyph;
                             }
-                            if (trueNeuIndex != -1)
+                            if (neumetalIndex != -1)
                             {
-                                // second true neuvolic, or invalid atom
+                                // second neumetal, or invalid atom
                                 goto nextGlyph;
                             }
-                            trueNeuIndex = API.GetNeumetalIndex(r.field_2280);
-                            if (trueNeuIndex == -1)
+                            neumetalIndex = API.GetNeumetalIndex(r.field_2280);
+                            if (neumetalIndex == -1)
                             {
                                 // invalid atom present
                                 goto nextGlyph;
                             }
-                            trueNeuvolic = r;
+                            neumetal = r;
                         }
 
 
-                        int delta = falseNeuvolic1.field_2280 == Atoms.Potassium ? -1 : 1;
+                        int delta = volic1.field_2280 == Atoms.Gelaron ? -1 : 1;
 
-                        Brimstone.API.RemoveAtom(trueNeuvolic);
-                        Brimstone.API.RemoveAtom(falseNeuvolic1);
-                        Brimstone.API.RemoveAtom(falseNeuvolic2);
+                        Brimstone.API.RemoveAtom(neumetal);
+                        Brimstone.API.RemoveAtom(volic1);
+                        Brimstone.API.RemoveAtom(volic2);
 
-                        Brimstone.API.DrawFallingAtom(seb, trueNeuvolic);
-                        Brimstone.API.DrawFallingAtom(seb, falseNeuvolic1);
-                        Brimstone.API.DrawFallingAtom(seb, falseNeuvolic2);
+                        Brimstone.API.DrawFallingAtom(seb, neumetal);
+                        Brimstone.API.DrawFallingAtom(seb, volic1);
+                        Brimstone.API.DrawFallingAtom(seb, volic2);
 
-                        Brimstone.API.AddSmallCollider(sim, part, FixationAntimonyIrisHex);
+                        Brimstone.API.AddSmallCollider(sim, part, FixationZephironIrisHex);
                         Brimstone.API.AddSmallCollider(sim, part, FixationNeumetalIrisHex);
 
                         pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[2] { Atoms.Antimony, API.GetNeuvolicAtom(trueNeuIndex + delta) };
+                        pss[part].field_2744 = new AtomType[2] { Atoms.Zephiron, API.GetNeumetalAtom(neumetalIndex + delta) };
 
                         Brimstone.API.PlaySound(sim, FixationSound);
                     }
                     else if (pss[part].field_2743)
                     {
-                        Brimstone.API.AddAtom(sim, part, FixationAntimonyIrisHex, pss[part].field_2744[0]);
+                        Brimstone.API.AddAtom(sim, part, FixationZephironIrisHex, pss[part].field_2744[0]);
                         Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss[part].field_2744[1]);
                     }
                 }
@@ -704,7 +758,7 @@ public static class Glyphs
                     {
                         HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
                         HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
-                        HexIndex ia = part.method_1184(ConsolidationAntimonyIrisHex);
+                        HexIndex ia = part.method_1184(ConsolidationZephironIrisHex);
 
                         if (sim.FindAtom(ia).method_1085())
                         {
@@ -720,7 +774,7 @@ public static class Glyphs
                             continue;
                         }
 
-                        if ((a1.field_2280 != Atoms.Lithium || a2.field_2280 != Atoms.Potassium) && (a1.field_2280 != Atoms.Potassium || a2.field_2280 != Atoms.Lithium))
+                        if ((a1.field_2280 != Atoms.Frixon || a2.field_2280 != Atoms.Gelaron) && (a1.field_2280 != Atoms.Gelaron || a2.field_2280 != Atoms.Frixon))
                         {
                             continue;
                         }
@@ -731,15 +785,107 @@ public static class Glyphs
                         Brimstone.API.DrawFallingAtom(seb, a1);
                         Brimstone.API.DrawFallingAtom(seb, a2);
 
-                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationAntimonyIrisHex);
+                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationZephironIrisHex);
                         pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[1] { Atoms.Antimony };
+                        pss[part].field_2744 = new AtomType[1] { Atoms.Zephiron };
 
                         Brimstone.API.PlaySound(sim, ConsolidationSound);
                     }
                     else if (pss[part].field_2743)
                     {
-                        Brimstone.API.AddAtom(sim, part, ConsolidationAntimonyIrisHex, pss[part].field_2744[0]);
+                        Brimstone.API.AddAtom(sim, part, ConsolidationZephironIrisHex, pss[part].field_2744[0]);
+                    }
+                }
+                else if (type == Putrefaction)
+                {
+                    HexIndex bowl = part.method_1184(PutrefactionBowlHex);
+                    HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
+                    HexIndex hole2 = part.method_1184(PutrefactionHole2Hex);
+                    if (!sim.FindAtom(bowl).method_99(out AtomReference bowlAtom))
+                    {
+                        //bowl empty
+                        continue;
+                    }
+
+                    int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
+                    if (neumetalIndex == -1) {
+                        // invalid atom
+                        continue;
+                    }
+
+                    bool consumeHole1 = sim.FindAtom(hole1).method_99(out AtomReference hole1Atom) && !hole1Atom.field_2281 && !hole1Atom.field_2282;
+                    bool consumeHole2 = sim.FindAtom(hole2).method_99(out AtomReference hole2Atom) && !hole2Atom.field_2281 && !hole2Atom.field_2282;
+
+                    if (consumeHole1)
+                    {
+                        if (hole1Atom.field_2280 == Atoms.Frixon)
+                        {
+                            neumetalIndex += 1;
+                        }
+                        else if (hole1Atom.field_2280 == Atoms.Gelaron)
+                        {
+                            neumetalIndex -= 1;
+                        }
+                        else
+                        {
+                            consumeHole1 = false;
+                        }
+                    }
+                    if (consumeHole2)
+                    {
+                        if (hole2Atom.field_2280 == Atoms.Frixon)
+                        {
+                            neumetalIndex += 1;
+                        }
+                        else if (hole2Atom.field_2280 == Atoms.Gelaron)
+                        {
+                            neumetalIndex -= 1;
+                        }
+                        else
+                        {
+                            consumeHole2 = false;
+                        }
+                    }
+
+                    if (!consumeHole1 && !consumeHole2)
+                    {
+                        // neither atom could be consumed
+                        continue;
+                    }
+
+                    if (consumeHole1)
+                    {
+                        Brimstone.API.RemoveAtom(hole1Atom);
+                        Brimstone.API.DrawFallingAtom(seb, hole1Atom);
+                    }
+                    if (consumeHole2)
+                    {
+                        Brimstone.API.RemoveAtom(hole2Atom);
+                        Brimstone.API.DrawFallingAtom(seb, hole2Atom);
+                    }
+
+                    Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
+                    bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
+
+                }
+                else if (type == class_191.field_1775) // triplex bonder
+                {
+                    foreach (class_222 bonder in type.field_1538)
+                    {
+                        if (!sim.FindAtomRelative(part, bonder.field_1920).method_99(out AtomReference leftAtom) || !sim.FindAtomRelative(part, bonder.field_1921).method_99(out AtomReference rightAtom))
+                        {
+                            continue;
+                        }
+                        bool isLeftFire = leftAtom.field_2280 == Brimstone.API.VanillaAtoms.fire;
+                        bool isLeftVolic = leftAtom.field_2280 == Atoms.Frixon || leftAtom.field_2280 == Atoms.Gelaron;
+                        bool isRightFire = rightAtom.field_2280 == Brimstone.API.VanillaAtoms.fire;
+                        bool isRightVolic = rightAtom.field_2280 == Atoms.Frixon || rightAtom.field_2280 == Atoms.Gelaron;
+
+                        if ((isLeftFire && isRightVolic) || (isLeftVolic && isRightFire) || (isLeftVolic && isRightVolic))
+                        {
+                            Brimstone.API.JoinMoleculesAtHexes(sim, part, bonder.field_1920, bonder.field_1921);
+                            Brimstone.API.AddBond(sim, part, bonder.field_1920, bonder.field_1921, bonder.field_1922);
+                        }
                     }
                 }
             nextGlyph:;

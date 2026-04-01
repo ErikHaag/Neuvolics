@@ -2,9 +2,9 @@
 
 public static class API
 {
-    private static readonly AtomType[] NeumetalCycle = { Atoms.Carbonic, Atoms.Bismuth, Atoms.Cobalt, Atoms.Arsenic, Atoms.Platinum };
+    private static readonly AtomType[] NeumetalCycle = { Atoms.Hestium, Atoms.Azulum, Atoms.Taceum, Atoms.Mitrum, Atoms.Iridium };
 
-    public static AtomType GetNeuvolicAtom(int i) => NeumetalCycle[class_162.method_408(i, 5) /* wrap the index in-bounds */];
+    public static AtomType GetNeumetalAtom(int i) => NeumetalCycle[class_162.method_408(i, 5) /* wrap the index in-bounds */];
 
     public static int GetNeumetalIndex(AtomType aT)
     {
