@@ -45,7 +45,7 @@ public static class Glyphs
     #endregion
 
     #region Sounds
-    public static Sound SeparationSound, FixationSound, ConsolidationSound;
+    public static Sound SeparationSound, FixationSound, ConsolidationSound, PutrefactionSound;
 
     public static void LoadSounds()
     {
@@ -54,6 +54,7 @@ public static class Glyphs
         SeparationSound = Brimstone.API.GetSound(contentDir, "sounds/separation").method_1087();
         FixationSound = Brimstone.API.GetSound(contentDir, "sounds/fixation").method_1087();
         ConsolidationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
+        PutrefactionSound = Brimstone.API.GetSound(contentDir, "sounds/putrefaction").method_1087();
 
         FieldInfo field = typeof(class_11).GetField("field_52", BindingFlags.Static | BindingFlags.NonPublic);
         Dictionary<string, float> volumeDictionary = (Dictionary<string, float>)field.GetValue(null);
@@ -61,6 +62,7 @@ public static class Glyphs
         volumeDictionary.Add("separation", 0.5f);
         volumeDictionary.Add("fixation", 0.5f);
         volumeDictionary.Add("consolidation", 0.5f);
+        volumeDictionary.Add("putrefaction", 0.5f);
     }
 
     #endregion
@@ -139,6 +141,7 @@ public static class Glyphs
             SeparationSound.field_4062 = false;
             FixationSound.field_4062 = false;
             ConsolidationSound.field_4062 = false;
+            PutrefactionSound.field_4062 = false;
         });
     }
 
@@ -808,7 +811,8 @@ public static class Glyphs
                     }
 
                     int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
-                    if (neumetalIndex == -1) {
+                    if (neumetalIndex == -1)
+                    {
                         // invalid atom
                         continue;
                     }
@@ -865,6 +869,7 @@ public static class Glyphs
                     }
 
                     Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
+                    Brimstone.API.PlaySound(sim, PutrefactionSound);
                     bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
 
                 }
