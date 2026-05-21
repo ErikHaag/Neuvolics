@@ -607,7 +607,7 @@ public static class Glyphs
                 renderer.method_529(Textures.HoleSymbol.Volic, h, Vector2.Zero);
             }
 
-            renderer.method_530(class_238.field_1989.field_90.field_170, PutrefactionBowlHex, 0);
+            renderer.method_528(class_238.field_1989.field_90.field_170, PutrefactionBowlHex, Vector2.Zero);
             renderer.method_529(Textures.BowlSymbol.Neumetal, PutrefactionBowlHex, Vector2.Zero);
 
         });
