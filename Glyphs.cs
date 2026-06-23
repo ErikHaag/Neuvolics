@@ -416,11 +416,11 @@ public static class Glyphs
                     if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
                     {
                         AtomType aT = a.field_2275;
-                        if (aT == Atoms.Gelaron)
+                        if (aT == Atoms.Frixon)
                         {
                             atomsPresent |= (atomsPresent & 1) != 0 ? 4 : 1;
                         }
-                        else if (aT == Atoms.Frixon)
+                        else if (aT == Atoms.Gelaron)
                         {
                             atomsPresent |= (atomsPresent & 2) != 0 ? 4 : 2;
                         }
@@ -431,21 +431,6 @@ public static class Glyphs
                     }
                 }
             }
-
-            switch (atomsPresent & 3)
-            {
-                case 3:
-                    // both frixon and gelaron are present, invalid.
-                    atomsPresent &= ~3;
-                    break;
-                case 1:
-                    atomsPresent |= 2;
-                    break;
-                default:
-                    break;
-            }
-
-            atomsPresent >>= 1;
 
             Vector2 pivot = new(122f, 191f);
             Vector2 offset = new(-1f, -1f);
@@ -460,12 +445,41 @@ public static class Glyphs
             }
 
             // input rendering
-            foreach (HexIndex h in holes)
             {
-                renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
-                renderer.method_529(Textures.Fixation.HoleBar, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 4) != 0 ? Textures.Fixation.HoleNeumetalInactive : Textures.Fixation.HoleNeumetalActive, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 1) != 0 ? ((atomsPresent & 2) != 0 ? Textures.Fixation.HoleVolicInactive : Textures.Fixation.HoleVolicHalfActive) : Textures.Fixation.HoleVolicActive, h, Vector2.Zero);
+                class_256 neumetalReadout = (atomsPresent & 8) != 0 ? Textures.Fixation.HoleNeumetalInactive : Textures.Fixation.HoleNeumetalActive;
+                class_256 volicReadout = Textures.Fixation.HoleVolicActive;
+                switch (atomsPresent & 7)
+                {
+                    case 1:
+                        // frixon x1
+                        volicReadout = Textures.Fixation.HoleFrixonHalfActive;
+                        break;
+                    case 2:
+                        // gelaron x1
+                        volicReadout = Textures.Fixation.HoleGelaronHalfActive;
+                        break;
+                    case 5:
+                        // frixon x2
+                        volicReadout = Textures.Fixation.HoleFrixonInactive;
+                        break;
+                    case 6:
+                        // gelaron x2
+                        volicReadout = Textures.Fixation.HoleGelaronInactive;
+                        break;
+                    default:
+                        // 0: no volics are present.
+                        // 3: 1 frixon and 1 gelaron are present, invalid.
+                        // 4: impossible state.
+                        // 7: 2 frixon and 1 gelaron -or- 1 frixon and 2 gelaron are present, also invalid.
+                        break;
+                }
+                foreach (HexIndex h in holes)
+                {
+                    renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
+                    renderer.method_529(Textures.Fixation.HoleBar, h, Vector2.Zero);
+                    renderer.method_529(neumetalReadout, h, Vector2.Zero);
+                    renderer.method_529(volicReadout, h, Vector2.Zero);
+                }
             }
 
             // irises

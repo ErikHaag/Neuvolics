@@ -50,11 +50,13 @@ public static class Textures
         public static readonly Texture[] Nets = new Texture[] { Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tr"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_tl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_bl"), Brimstone.API.GetTexture(glyphTexturePath + "Fixation/base_br") };
         public static readonly Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/connectors");
         public static readonly Texture HoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/separator");
-        public static readonly Texture HoleNeumetalInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/neumetal_inactive");
         public static readonly Texture HoleNeumetalActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/neumetal_active");
-        public static readonly Texture HoleVolicInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_inactive");
-        public static readonly Texture HoleVolicHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_half_active");
+        public static readonly Texture HoleNeumetalInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/neumetal_inactive");
         public static readonly Texture HoleVolicActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/volic_active");
+        public static readonly Texture HoleFrixonHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/frixon_half_active");
+        public static readonly Texture HoleFrixonInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/frixon_inactive");
+        public static readonly Texture HoleGelaronHalfActive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/gelaron_half_active");
+        public static readonly Texture HoleGelaronInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/gelaron_inactive");
     }
 
     public static class Consolidation
