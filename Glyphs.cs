@@ -895,12 +895,20 @@ public static class Glyphs
                         {
                             continue;
                         }
-                        bool isLeftFire = leftAtom.field_2280 == Brimstone.API.VanillaAtoms.fire;
-                        bool isLeftVolic = leftAtom.field_2280 == Atoms.Frixon || leftAtom.field_2280 == Atoms.Gelaron;
-                        bool isRightFire = rightAtom.field_2280 == Brimstone.API.VanillaAtoms.fire;
-                        bool isRightVolic = rightAtom.field_2280 == Atoms.Frixon || rightAtom.field_2280 == Atoms.Gelaron;
-
-                        if ((isLeftFire && isRightVolic) || (isLeftVolic && isRightFire) || (isLeftVolic && isRightVolic))
+                        bool isLeftFire = leftAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
+                                          || (MainClass.HalvingMetallurgyLoaded && leftAtom.field_2280 == ImportManager.Fields.HMVulcan);
+                        bool isLeftNeuvolic = leftAtom.field_2280 == Atoms.Frixon
+                                              || leftAtom.field_2280 == Atoms.Gelaron
+                                              || leftAtom.field_2280 == Atoms.Azulum
+                                              || leftAtom.field_2280 == Atoms.Iridium;
+                        bool isRightFire = rightAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
+                                           || (MainClass.HalvingMetallurgyLoaded && rightAtom.field_2280 == ImportManager.Fields.HMVulcan);
+                        bool isRightNeuvolic = rightAtom.field_2280 == Atoms.Frixon
+                                               || rightAtom.field_2280 == Atoms.Gelaron
+                                               || rightAtom.field_2280 == Atoms.Azulum
+                                               || rightAtom.field_2280 == Atoms.Iridium;
+                        // isLeftFire && isRightFire is handled by Vanilla or HM
+                        if ((isLeftFire && isRightNeuvolic) || (isLeftNeuvolic && isRightFire) || (isLeftNeuvolic && isRightNeuvolic))
                         {
                             Brimstone.API.JoinMoleculesAtHexes(sim, part, bonder.field_1920, bonder.field_1921);
                             Brimstone.API.AddBond(sim, part, bonder.field_1920, bonder.field_1921, bonder.field_1922);
