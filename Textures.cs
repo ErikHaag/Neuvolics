@@ -21,6 +21,9 @@ public static class Textures
 
         public static readonly Texture Putrefaction = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction");
         public static readonly Texture PutrefactionHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction_hover");
+
+        public static readonly Texture Cataclysm = Brimstone.API.GetTexture(glyphTexturePath + "icon/cataclysm");
+        public static readonly Texture CataclysmHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/cataclysm_hover");
     }
 
     public static class Select
@@ -31,6 +34,25 @@ public static class Textures
         public static readonly Texture TrilineStroke = Brimstone.API.GetTexture(selectTexturePath + "triline_stroke");
         public static readonly Texture BendGlow = Brimstone.API.GetTexture(selectTexturePath + "bend_glow");
         public static readonly Texture BendStroke = Brimstone.API.GetTexture(selectTexturePath + "bend_stroke");
+    }
+
+    public static class Putrefaction
+    {
+        public static readonly Texture Base = class_238.field_1989.field_90.field_213;
+    }
+
+    public static class Consolidation
+    {
+        public static Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/base");
+        public static Texture VolicInput = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/volic_input");
+        public static Texture IrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_under_iris");
+        public static Texture IrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_above_iris");
+        public static Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/connectors");
+        public static Texture HoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/separator");
+        public static Texture HoleFrixonActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_active");
+        public static Texture HoleFrixonInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_inactive");
+        public static Texture HoleGelaronActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_active");
+        public static Texture HoleGelaronInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_inactive");
     }
 
     public static class Separation
@@ -59,21 +81,7 @@ public static class Textures
         public static readonly Texture HoleGelaronInactive = Brimstone.API.GetTexture(glyphTexturePath + "Fixation/gelaron_inactive");
     }
 
-    public static class Consolidation
-    {
-        public static Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/base");
-        public static Texture VolicInput = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/volic_input");
-        public static Texture IrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_under_iris");
-        public static Texture IrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/output_above_iris");
-        public static Texture Connectors = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/connectors");
-        public static Texture HoleBar = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/separator");
-        public static Texture HoleFrixonActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_active");
-        public static Texture HoleFrixonInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/frixon_inactive");
-        public static Texture HoleGelaronActive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_active");
-        public static Texture HoleGelaronInactive = Brimstone.API.GetTexture(glyphTexturePath + "Consolidation/gelaron_inactive");
-    }
-
-    public static class Putrefaction
+    public static class Cataclysm
     {
         public static readonly Texture Base = class_238.field_1989.field_90.field_213;
     }
@@ -87,6 +95,7 @@ public static class Textures
     public static class BowlSymbol
     {
         public static readonly Texture Neumetal = Brimstone.API.GetTexture(glyphTexturePath + "neumetal_bowl");
+        public static readonly Texture Volic = Brimstone.API.GetTexture(glyphTexturePath + "volic_bowl");
     }
 
     public static class Irises

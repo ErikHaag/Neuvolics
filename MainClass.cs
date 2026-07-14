@@ -9,6 +9,7 @@ public class MainClass : QuintessentialMod
     public const string FixationPermission = "Neuvolics:fixation";
     public const string ConsolidationPermission = "Neuvolics:consolidation";
     public const string PutrefactionPermission = "Neuvolics:putrefaction";
+    public const string CataclysmPermission = "Neuvolics:cataclysm";
 
     public static bool HalvingMetallurgyLoaded = Brimstone.API.IsModLoaded("HalvingMetallurgy");
 
@@ -29,10 +30,11 @@ public class MainClass : QuintessentialMod
         Glyphs.AddHooks();
         Glyphs.AddGlyphs();
 
+        QApi.AddPuzzlePermission(PutrefactionPermission, "Glyph of Putrefaction", "Neuvolics");
+        QApi.AddPuzzlePermission(ConsolidationPermission, "Glyph of Consolidation", "Neuvolics");
         QApi.AddPuzzlePermission(SeparationPermission, "Glyph of Separation", "Neuvolics");
         QApi.AddPuzzlePermission(FixationPermission, "Glyph of Fixation", "Neuvolics");
-        QApi.AddPuzzlePermission(ConsolidationPermission, "Glyph of Consolidation", "Neuvolics");
-        QApi.AddPuzzlePermission(PutrefactionPermission, "Glyph of Putrefaction", "Neuvolics");
+        QApi.AddPuzzlePermission(CataclysmPermission, "Glyph of Cataclysm", "Neuvolics");
 
         if (HalvingMetallurgyLoaded)
         {

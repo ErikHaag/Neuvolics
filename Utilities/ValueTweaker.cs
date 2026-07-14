@@ -1,6 +1,6 @@
 ﻿using Quintessential;
 
-namespace Neuvolics;
+namespace Neuvolics.Utilities;
 
 public class ValueTweaker
 {

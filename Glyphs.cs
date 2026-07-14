@@ -2,6 +2,8 @@
 
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.Utils;
+using Neuvolics.Utilities;
 using Quintessential;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ public static class Glyphs
     public static PartType Fixation;
     public static PartType Consolidation;
     public static PartType Putrefaction;
+    public static PartType Cataclysm;
 
     #endregion
 
@@ -42,6 +45,10 @@ public static class Glyphs
     public static readonly HexIndex PutrefactionHole1Hex = new(0, -1);
     public static readonly HexIndex PutrefactionHole2Hex = new(-1, 1);
 
+    public static readonly HexIndex CataclysmHoleHex = new(-1, 0);
+    public static readonly HexIndex CataclysmIrisHex = new(0, 0);
+    public static readonly HexIndex CataclysmBowl1Hex = new(0, 1);
+    public static readonly HexIndex CataclysmBowl2Hex = new(1, -1);
     #endregion
 
     #region Sounds
@@ -213,6 +220,42 @@ public static class Glyphs
     {
         #region Glyph definitions
 
+        Putrefaction = Brimstone.API.CreateSimpleGlyph(
+            ID: "neuvolics-putrefaction",
+            name: "Glyph of Putrefaction",
+            description: "The glyph of putrefaction consumes one or two atoms of frixon or gelaron to transmute a neumetal to an adjacent form.",
+            cost: 10,
+            glow: class_238.field_1989.field_97.field_384,
+            stroke: class_238.field_1989.field_97.field_385,
+            icon: Textures.Icon.Putrefaction,
+            hoveredIcon: Textures.Icon.PutrefactionHover,
+            usedHexes: new HexIndex[]
+            {
+                new(0,0),
+                PutrefactionBowlHex,
+                PutrefactionHole1Hex,
+                PutrefactionHole2Hex
+            },
+            customPermission: MainClass.PutrefactionPermission
+        );
+
+        Consolidation = Brimstone.API.CreateSimpleGlyph(
+            ID: "neuvolics-consolidation",
+            name: "Glyph of Consolidation",
+            description: "The glyph of consolidation consumes an atom of frixon and gelaron to combine them into zephiron.",
+            cost: 10,
+            glow: Textures.Select.BendGlow,
+            stroke: Textures.Select.BendStroke,
+            icon: Textures.Icon.Consolidation,
+            hoveredIcon: Textures.Icon.ConsolidationHover,
+            usedHexes: new HexIndex[] {
+                ConsolidationHole1Hex,
+                ConsolidationHole2Hex,
+                ConsolidationZephironIrisHex
+            },
+            customPermission: MainClass.ConsolidationPermission
+        );
+
         Separation = Brimstone.API.CreateSimpleGlyph(
             ID: "neuvolics-separation",
             name: "Glyph of Separation",
@@ -249,50 +292,127 @@ public static class Glyphs
             customPermission: MainClass.FixationPermission
         );
 
-        Consolidation = Brimstone.API.CreateSimpleGlyph(
-            ID: "neuvolics-consolidation",
-            name: "Glyph of Consolidation",
-            description: "The glyph of consolidation consumes an atom of frixon and gelaron to combine them into zephiron.",
-            cost: 10,
-            glow: Textures.Select.BendGlow,
-            stroke: Textures.Select.BendStroke,
-            icon: Textures.Icon.Consolidation,
-            hoveredIcon: Textures.Icon.ConsolidationHover,
-            usedHexes: new HexIndex[] {
-                ConsolidationHole1Hex,
-                ConsolidationHole2Hex,
-                ConsolidationZephironIrisHex
-            },
-            customPermission: MainClass.ConsolidationPermission
-        );
-
-        Putrefaction = Brimstone.API.CreateSimpleGlyph(
-            ID: "neuvolics-putrefaction",
-            name: "Glyph of Putrefaction",
-            description: "The glyph of putrefaction consumes one or two atoms of frixon or gelaron to transmute a neumetal to an adjacent form.",
-            cost: 10,
-            glow: class_238.field_1989.field_97.field_384,
-            stroke: class_238.field_1989.field_97.field_385,
-            icon: Textures.Icon.Putrefaction,
-            hoveredIcon: Textures.Icon.PutrefactionHover,
+        Cataclysm = Brimstone.API.CreateSimpleGlyph(
+            ID: "neuvolics-cataclysm",
+            name: "Glyph of Cataclysm",
+            description: "The glyph of cataclysm holds 3 atoms of zephiron initially, with space for 6 internally. In addition, the glyph transfuses an atom of zephiron into a volic via the bowls, transmuting the volic into zephiron, and the zephiron into the opposing volic.",
+            cost: 20,
+            glow: class_238.field_1989.field_97.field_372,
+            stroke: class_238.field_1989.field_97.field_373,
+            icon: Textures.Icon.Cataclysm,
+            hoveredIcon: Textures.Icon.CataclysmHover,
             usedHexes: new HexIndex[]
             {
-                new(0,0),
-                PutrefactionBowlHex,
-                PutrefactionHole1Hex,
-                PutrefactionHole2Hex
+                CataclysmHoleHex,
+                CataclysmIrisHex,
+                CataclysmBowl1Hex,
+                CataclysmBowl2Hex
             },
-            customPermission: MainClass.PutrefactionPermission
+            customPermission: MainClass.CataclysmPermission
         );
-
         #endregion
 
+        QApi.AddPartTypeToPanel(Putrefaction, false);
+        QApi.AddPartTypeToPanel(Consolidation, false);
         QApi.AddPartTypeToPanel(Separation, false);
         QApi.AddPartTypeToPanel(Fixation, false);
-        QApi.AddPartTypeToPanel(Consolidation, false);
-        QApi.AddPartTypeToPanel(Putrefaction, false);
+        QApi.AddPartTypeToPanel(Cataclysm, false);
 
         #region Glyph renderers
+
+        QApi.AddPartType(Putrefaction, static (part, pos, editor, renderer) =>
+        {
+            //PartSimState pss = editor.method_507().method_481(part);
+            //class_236 uco = editor.method_1989(part, pos);
+            //float time = editor.method_504();
+
+            Vector2 pivot = new(83f, 119f);
+            Vector2 offset = new(0, -1f);
+            renderer.method_523(Textures.Putrefaction.Base, offset, pivot, 0);
+
+            HexIndex[] holes = new HexIndex[]
+            {
+                PutrefactionHole1Hex, PutrefactionHole2Hex
+            };
+
+            foreach (HexIndex h in holes)
+            {
+                renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
+                renderer.method_529(Textures.HoleSymbol.Volic, h, Vector2.Zero);
+            }
+
+            renderer.method_528(class_238.field_1989.field_90.field_170, PutrefactionBowlHex, Vector2.Zero);
+            renderer.method_529(Textures.BowlSymbol.Neumetal, PutrefactionBowlHex, Vector2.Zero);
+
+        });
+
+        QApi.AddPartType(Consolidation, static (part, pos, editor, renderer) =>
+        {
+            PartSimState pss = editor.method_507().method_481(part);
+            class_236 uco = editor.method_1989(part, pos);
+            float time = editor.method_504();
+
+            int atomsPresent = 0;
+
+            HexIndex[] holes = new HexIndex[] { ConsolidationHole1Hex, ConsolidationHole2Hex };
+            foreach (HexIndex h in holes)
+            {
+                foreach (Molecule m in editor.method_507().method_483())
+                {
+                    if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
+                    {
+                        AtomType aT = a.field_2275;
+                        if (aT == Atoms.Gelaron)
+                        {
+                            atomsPresent |= 1;
+                        }
+                        else if (aT == Atoms.Frixon)
+                        {
+                            atomsPresent |= 2;
+                        }
+                    }
+                }
+            }
+
+            Vector2 pivot = new(41f, 119f);
+            Vector2 offset = new(-1f, -1f);
+            renderer.method_523(Textures.Consolidation.Base, offset, pivot, 0f);
+
+            foreach (HexIndex h in holes)
+            {
+                renderer.method_530(Textures.Consolidation.VolicInput, h, 0f);
+                renderer.method_529(Textures.Consolidation.HoleBar, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 1) == 0 ? Textures.Consolidation.HoleGelaronActive : Textures.Consolidation.HoleGelaronInactive, h, Vector2.Zero);
+                renderer.method_529((atomsPresent & 2) == 0 ? Textures.Consolidation.HoleFrixonActive : Textures.Consolidation.HoleFrixonInactive, h, Vector2.Zero);
+            }
+
+            // iris
+            int irisFrame = 15;
+            bool afterIrisOpens = false;
+            Molecule risingAtom = null;
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(ConsolidationZephironIrisHex).Rotated(uco.field_1985);
+
+            renderer.method_528(Textures.Consolidation.IrisBase, ConsolidationZephironIrisHex, Vector2.Zero);
+            if (pss.field_2743)
+            {
+                irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
+                afterIrisOpens = time > 0.5f;
+                risingAtom = Molecule.method_1121(pss.field_2744[0]);
+                if (!afterIrisOpens)
+                {
+                    // show atom rising behind iris
+                    Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
+                }
+            }
+            renderer.method_529(Textures.Irises.Zephiron[irisFrame], ConsolidationZephironIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Consolidation.IrisLip, ConsolidationZephironIrisHex, Vector2.Zero);
+            if (pss.field_2743 && afterIrisOpens)
+            {
+                // show atom rising infront of iris
+                Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
+            }
+            renderer.method_523(Textures.Consolidation.Connectors, offset, pivot, 0);
+        });
 
         QApi.AddPartType(Separation, static (part, pos, editor, renderer) =>
         {
@@ -532,53 +652,31 @@ public static class Glyphs
 
         });
 
-        QApi.AddPartType(Consolidation, static (part, pos, editor, renderer) =>
+        QApi.AddPartType(Cataclysm, static (part, pos, editor, renderer) =>
         {
             PartSimState pss = editor.method_507().method_481(part);
             class_236 uco = editor.method_1989(part, pos);
             float time = editor.method_504();
 
-            int atomsPresent = 0;
+            Vector2 pivot = new(82, 120);
+            Vector2 offset = Vector2.Zero;
 
-            HexIndex[] holes = new HexIndex[] { ConsolidationHole1Hex, ConsolidationHole2Hex };
-            foreach (HexIndex h in holes)
+            renderer.method_523(Textures.Cataclysm.Base, offset, pivot, (float)Math.PI);
+            renderer.method_530(class_238.field_1989.field_90.field_255.field_293, CataclysmHoleHex, 0);
+            renderer.method_529(Textures.HoleSymbol.Zephiron, CataclysmHoleHex, Vector2.Zero);
+            foreach (HexIndex h in new HexIndex[] { CataclysmBowl1Hex, CataclysmBowl2Hex })
             {
-                foreach (Molecule m in editor.method_507().method_483())
-                {
-                    if (m.method_1100().Count == 1 && m.method_1100().TryGetValue(part.method_1184(h), out Atom a))
-                    {
-                        AtomType aT = a.field_2275;
-                        if (aT == Atoms.Gelaron)
-                        {
-                            atomsPresent |= 1;
-                        }
-                        else if (aT == Atoms.Frixon)
-                        {
-                            atomsPresent |= 2;
-                        }
-                    }
-                }
+                renderer.method_528(class_238.field_1989.field_90.field_170, h, Vector2.Zero);
+                renderer.method_529(Textures.BowlSymbol.Volic, h, Vector2.Zero);
             }
 
-            Vector2 pivot = new(41f, 119f);
-            Vector2 offset = new(-1f, -1f);
-            renderer.method_523(Textures.Consolidation.Base, offset, pivot, 0f);
-
-            foreach (HexIndex h in holes)
-            {
-                renderer.method_530(Textures.Consolidation.VolicInput, h, 0f);
-                renderer.method_529(Textures.Consolidation.HoleBar, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 1) == 0 ? Textures.Consolidation.HoleGelaronActive : Textures.Consolidation.HoleGelaronInactive, h, Vector2.Zero);
-                renderer.method_529((atomsPresent & 2) == 0 ? Textures.Consolidation.HoleFrixonActive : Textures.Consolidation.HoleFrixonInactive, h, Vector2.Zero);
-            }
-
-            // iris
+            // irises
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
-            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(ConsolidationZephironIrisHex).Rotated(uco.field_1985);
+            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(CataclysmIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(Textures.Consolidation.IrisBase, ConsolidationZephironIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, CataclysmIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -590,40 +688,13 @@ public static class Glyphs
                     Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
                 }
             }
-            renderer.method_529(Textures.Irises.Zephiron[irisFrame], ConsolidationZephironIrisHex, Vector2.Zero);
-            renderer.method_528(Textures.Consolidation.IrisLip, ConsolidationZephironIrisHex, Vector2.Zero);
+            renderer.method_529(Textures.Irises.Zephiron[irisFrame], CataclysmIrisHex, Vector2.Zero);
+            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, CataclysmIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
-            renderer.method_523(Textures.Consolidation.Connectors, offset, pivot, 0);
-        });
-
-        QApi.AddPartType(Putrefaction, static (part, pos, editor, renderer) =>
-        {
-            //PartSimState pss = editor.method_507().method_481(part);
-            //class_236 uco = editor.method_1989(part, pos);
-            //float time = editor.method_504();
-
-            Vector2 pivot = new(83f, 119f);
-            Vector2 offset = new(0, -1f);
-            renderer.method_523(Textures.Putrefaction.Base, offset, pivot, 0);
-
-            HexIndex[] holes = new HexIndex[]
-            {
-                PutrefactionHole1Hex, PutrefactionHole2Hex
-            };
-
-            foreach (HexIndex h in holes)
-            {
-                renderer.method_530(class_238.field_1989.field_90.field_255.field_293, h, 0);
-                renderer.method_529(Textures.HoleSymbol.Volic, h, Vector2.Zero);
-            }
-
-            renderer.method_528(class_238.field_1989.field_90.field_170, PutrefactionBowlHex, Vector2.Zero);
-            renderer.method_529(Textures.BowlSymbol.Neumetal, PutrefactionBowlHex, Vector2.Zero);
-
         });
 
         #endregion
@@ -637,7 +708,125 @@ public static class Glyphs
             foreach (var part in parts)
             {
                 PartType type = part.method_1159();
-                if (type == Separation)
+                if (type == Putrefaction)
+                {
+                    HexIndex bowl = part.method_1184(PutrefactionBowlHex);
+                    HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
+                    HexIndex hole2 = part.method_1184(PutrefactionHole2Hex);
+                    if (!sim.FindAtom(bowl).method_99(out AtomReference bowlAtom))
+                    {
+                        //bowl empty
+                        continue;
+                    }
+
+                    int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
+                    if (neumetalIndex == -1)
+                    {
+                        // invalid atom
+                        continue;
+                    }
+
+                    bool consumeHole1 = sim.FindAtom(hole1).method_99(out AtomReference hole1Atom) && !hole1Atom.field_2281 && !hole1Atom.field_2282;
+                    bool consumeHole2 = sim.FindAtom(hole2).method_99(out AtomReference hole2Atom) && !hole2Atom.field_2281 && !hole2Atom.field_2282;
+
+                    if (consumeHole1)
+                    {
+                        if (hole1Atom.field_2280 == Atoms.Frixon)
+                        {
+                            neumetalIndex += 1;
+                        }
+                        else if (hole1Atom.field_2280 == Atoms.Gelaron)
+                        {
+                            neumetalIndex -= 1;
+                        }
+                        else
+                        {
+                            consumeHole1 = false;
+                        }
+                    }
+                    if (consumeHole2)
+                    {
+                        if (hole2Atom.field_2280 == Atoms.Frixon)
+                        {
+                            neumetalIndex += 1;
+                        }
+                        else if (hole2Atom.field_2280 == Atoms.Gelaron)
+                        {
+                            neumetalIndex -= 1;
+                        }
+                        else
+                        {
+                            consumeHole2 = false;
+                        }
+                    }
+
+                    if (!consumeHole1 && !consumeHole2)
+                    {
+                        // neither atom could be consumed
+                        continue;
+                    }
+
+                    if (consumeHole1)
+                    {
+                        Brimstone.API.RemoveAtom(hole1Atom);
+                        Brimstone.API.DrawFallingAtom(seb, hole1Atom);
+                    }
+                    if (consumeHole2)
+                    {
+                        Brimstone.API.RemoveAtom(hole2Atom);
+                        Brimstone.API.DrawFallingAtom(seb, hole2Atom);
+                    }
+
+                    Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
+                    Brimstone.API.PlaySound(sim, PutrefactionSound);
+                    bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
+
+                }
+                else if (type == Consolidation)
+                {
+                    if (first)
+                    {
+                        HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
+                        HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
+                        HexIndex ia = part.method_1184(ConsolidationZephironIrisHex);
+
+                        if (sim.FindAtom(ia).method_1085())
+                        {
+                            // blocked!
+                            continue;
+                        }
+                        if (!sim.FindAtom(h1).method_99(out AtomReference a1) || a1.field_2281 || a1.field_2282)
+                        {
+                            continue;
+                        }
+                        if (!sim.FindAtom(h2).method_99(out AtomReference a2) || a2.field_2281 || a2.field_2282)
+                        {
+                            continue;
+                        }
+
+                        if ((a1.field_2280 != Atoms.Frixon || a2.field_2280 != Atoms.Gelaron) && (a1.field_2280 != Atoms.Gelaron || a2.field_2280 != Atoms.Frixon))
+                        {
+                            continue;
+                        }
+
+                        Brimstone.API.RemoveAtom(a1);
+                        Brimstone.API.RemoveAtom(a2);
+
+                        Brimstone.API.DrawFallingAtom(seb, a1);
+                        Brimstone.API.DrawFallingAtom(seb, a2);
+
+                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationZephironIrisHex);
+                        pss[part].field_2743 = true;
+                        pss[part].field_2744 = new AtomType[1] { Atoms.Zephiron };
+
+                        Brimstone.API.PlaySound(sim, ConsolidationSound);
+                    }
+                    else if (pss[part].field_2743)
+                    {
+                        Brimstone.API.AddAtom(sim, part, ConsolidationZephironIrisHex, pss[part].field_2744[0]);
+                    }
+                }
+                else if (type == Separation)
                 {
                     if (first)
                     {
@@ -769,123 +958,78 @@ public static class Glyphs
                         Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss[part].field_2744[1]);
                     }
                 }
-                else if (type == Consolidation)
+                else if (type == Cataclysm)
                 {
                     if (first)
                     {
-                        HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
-                        HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
-                        HexIndex ia = part.method_1184(ConsolidationZephironIrisHex);
-
-                        if (sim.FindAtom(ia).method_1085())
+                        DynamicData pss_data = new(pss[part]);
+                        Object stateObj = pss_data.Get("state");
+                        CataclysmState cataclysmState = stateObj is not null ? (CataclysmState)stateObj : new();
+                        if (!(sim.FindAtomRelative(part, CataclysmHoleHex).method_99(out AtomReference zephiron) && zephiron.field_2280 == Atoms.Zephiron && !zephiron.field_2281 && !zephiron.field_2282))
+                        {
+                            goto tryTransmute;
+                        }
+                        Brimstone.API.RemoveAtom(zephiron);
+                        Brimstone.API.DrawFallingAtom(seb, zephiron);
+                        if (cataclysmState.ZephironCount < 6)
+                        {
+                            cataclysmState.ZephironCount++;
+                            //Brimstone.API.PlaySound(sim, CataclysmConsume);
+                        }
+                        else
+                        {
+                            // todo: flash
+                            //Brimstone.API.PlaySound(sim, CataclysmDiscard);
+                        }
+                    tryTransmute:
+                        if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom) || !sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
+                        {
+                            goto tryEject;
+                        }
+                        AtomReference bowlVolic = null;
+                        AtomReference bowlZephiron = null;
+                        if (bowl1Atom.field_2280 == Atoms.Zephiron)
+                        {
+                            bowlVolic = bowl2Atom;
+                            bowlZephiron = bowl1Atom;
+                        }
+                        else if (bowl2Atom.field_2280 == Atoms.Zephiron)
+                        {
+                            bowlVolic = bowl1Atom;
+                            bowlZephiron = bowl2Atom;
+                        }
+                        else
+                        {
+                            // no zwphiron
+                            goto tryEject;
+                        }
+                        if (bowlVolic.field_2280 != Atoms.Frixon && bowlVolic.field_2280 != Atoms.Gelaron)
+                        {
+                            // no volic.
+                            goto tryEject;
+                        }
+                        // transfuse
+                        Brimstone.API.ChangeAtom(bowlZephiron, bowlVolic.field_2280 == Atoms.Gelaron ? Atoms.Frixon : Atoms.Gelaron);
+                        Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
+                        bowlVolic.field_2279.field_2276 = new class_168(seb, (enum_7)0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                        bowlZephiron.field_2279.field_2276 = new class_168(seb, (enum_7)0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                    tryEject:
+                        if (cataclysmState.ZephironCount == 0 || sim.FindAtomRelative(part, CataclysmIrisHex).method_1085())
                         {
                             // blocked!
-                            continue;
+                            goto setState;
                         }
-                        if (!sim.FindAtom(h1).method_99(out AtomReference a1) || a1.field_2281 || a1.field_2282)
-                        {
-                            continue;
-                        }
-                        if (!sim.FindAtom(h2).method_99(out AtomReference a2) || a2.field_2281 || a2.field_2282)
-                        {
-                            continue;
-                        }
-
-                        if ((a1.field_2280 != Atoms.Frixon || a2.field_2280 != Atoms.Gelaron) && (a1.field_2280 != Atoms.Gelaron || a2.field_2280 != Atoms.Frixon))
-                        {
-                            continue;
-                        }
-
-                        Brimstone.API.RemoveAtom(a1);
-                        Brimstone.API.RemoveAtom(a2);
-
-                        Brimstone.API.DrawFallingAtom(seb, a1);
-                        Brimstone.API.DrawFallingAtom(seb, a2);
-
-                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationZephironIrisHex);
+                        cataclysmState.ZephironCount--;
+                        Brimstone.API.AddSmallCollider(sim, part, CataclysmIrisHex);
                         pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[1] { Atoms.Zephiron };
-
-                        Brimstone.API.PlaySound(sim, ConsolidationSound);
+                        pss[part].field_2744 = new AtomType[] { Atoms.Zephiron };
+                    setState:
+                        pss_data.Set("state", cataclysmState);
                     }
                     else if (pss[part].field_2743)
                     {
-                        Brimstone.API.AddAtom(sim, part, ConsolidationZephironIrisHex, pss[part].field_2744[0]);
+                        Brimstone.API.AddAtom(sim, part, CataclysmIrisHex, pss[part].field_2744[0]);
                     }
-                }
-                else if (type == Putrefaction)
-                {
-                    HexIndex bowl = part.method_1184(PutrefactionBowlHex);
-                    HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
-                    HexIndex hole2 = part.method_1184(PutrefactionHole2Hex);
-                    if (!sim.FindAtom(bowl).method_99(out AtomReference bowlAtom))
-                    {
-                        //bowl empty
-                        continue;
-                    }
-
-                    int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
-                    if (neumetalIndex == -1)
-                    {
-                        // invalid atom
-                        continue;
-                    }
-
-                    bool consumeHole1 = sim.FindAtom(hole1).method_99(out AtomReference hole1Atom) && !hole1Atom.field_2281 && !hole1Atom.field_2282;
-                    bool consumeHole2 = sim.FindAtom(hole2).method_99(out AtomReference hole2Atom) && !hole2Atom.field_2281 && !hole2Atom.field_2282;
-
-                    if (consumeHole1)
-                    {
-                        if (hole1Atom.field_2280 == Atoms.Frixon)
-                        {
-                            neumetalIndex += 1;
-                        }
-                        else if (hole1Atom.field_2280 == Atoms.Gelaron)
-                        {
-                            neumetalIndex -= 1;
-                        }
-                        else
-                        {
-                            consumeHole1 = false;
-                        }
-                    }
-                    if (consumeHole2)
-                    {
-                        if (hole2Atom.field_2280 == Atoms.Frixon)
-                        {
-                            neumetalIndex += 1;
-                        }
-                        else if (hole2Atom.field_2280 == Atoms.Gelaron)
-                        {
-                            neumetalIndex -= 1;
-                        }
-                        else
-                        {
-                            consumeHole2 = false;
-                        }
-                    }
-
-                    if (!consumeHole1 && !consumeHole2)
-                    {
-                        // neither atom could be consumed
-                        continue;
-                    }
-
-                    if (consumeHole1)
-                    {
-                        Brimstone.API.RemoveAtom(hole1Atom);
-                        Brimstone.API.DrawFallingAtom(seb, hole1Atom);
-                    }
-                    if (consumeHole2)
-                    {
-                        Brimstone.API.RemoveAtom(hole2Atom);
-                        Brimstone.API.DrawFallingAtom(seb, hole2Atom);
-                    }
-
-                    Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
-                    Brimstone.API.PlaySound(sim, PutrefactionSound);
-                    bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
-
                 }
                 else if (type == class_191.field_1775) // triplex bonder
                 {

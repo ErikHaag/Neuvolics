@@ -1,4 +1,6 @@
-﻿using MonoMod.ModInterop;
+﻿#pragma warning disable CS0649
+
+using MonoMod.ModInterop;
 using System;
 
 namespace Neuvolics;
