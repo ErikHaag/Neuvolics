@@ -52,7 +52,7 @@ public static class Glyphs
     #endregion
 
     #region Sounds
-    public static Sound SeparationSound, FixationSound, ConsolidationSound, PutrefactionSound;
+    public static Sound SeparationSound, FixationSound, ConsolidationSound, PutrefactionSound, CataclysmConsumeSound, CataclysmDiscardSound, CataclysmEjectSound, CataclysmTransfuseFrix, CataclysmTransfuseGel;
 
     public static void LoadSounds()
     {
@@ -62,6 +62,12 @@ public static class Glyphs
         FixationSound = Brimstone.API.GetSound(contentDir, "sounds/fixation").method_1087();
         ConsolidationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
         PutrefactionSound = Brimstone.API.GetSound(contentDir, "sounds/putrefaction").method_1087();
+        CataclysmConsumeSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmConsume").method_1087();
+        CataclysmDiscardSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmDiscard").method_1087();
+        CataclysmEjectSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmEject").method_1087();
+        CataclysmTransfuseFrix = Brimstone.API.GetSound(contentDir, "sounds/cataclysmTransfuseFrix").method_1087();
+        CataclysmTransfuseGel = Brimstone.API.GetSound(contentDir, "sounds/cataclysmTransfuseGel").method_1087();
+
 
         FieldInfo field = typeof(class_11).GetField("field_52", BindingFlags.Static | BindingFlags.NonPublic);
         Dictionary<string, float> volumeDictionary = (Dictionary<string, float>)field.GetValue(null);
@@ -70,6 +76,11 @@ public static class Glyphs
         volumeDictionary.Add("fixation", 0.5f);
         volumeDictionary.Add("consolidation", 0.5f);
         volumeDictionary.Add("putrefaction", 0.5f);
+        volumeDictionary.Add("cataclysmConsume", 0.4f);
+        volumeDictionary.Add("cataclysmDiscard", 0.5f);
+        volumeDictionary.Add("cataclysmEject", 0.4f);
+        volumeDictionary.Add("cataclysmTransfuseFrix", 0.4f);
+        volumeDictionary.Add("cataclysmTransfuseGel", 0.4f);
     }
 
     #endregion
@@ -149,6 +160,11 @@ public static class Glyphs
             FixationSound.field_4062 = false;
             ConsolidationSound.field_4062 = false;
             PutrefactionSound.field_4062 = false;
+            CataclysmConsumeSound.field_4062 = false;
+            CataclysmDiscardSound.field_4062 = false;
+            CataclysmEjectSound.field_4062 = false;
+            CataclysmTransfuseFrix.field_4062 = false;
+            CataclysmTransfuseGel.field_4062 = false;
         });
     }
 
@@ -310,6 +326,9 @@ public static class Glyphs
             },
             customPermission: MainClass.CataclysmPermission
         );
+
+        Cataclysm.field_1552 = true; // only one allowed
+
         #endregion
 
         QApi.AddPartTypeToPanel(Putrefaction, false);
@@ -425,7 +444,7 @@ public static class Glyphs
             renderer.method_523(Textures.Separation.Base, offset, pivot, 0);
             // input
             renderer.method_530(Textures.Separation.ZephironInput, SeparationHoleHex, 0);
-            class_135.method_272(Textures.HoleSymbol.Zephiron, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - Textures.HoleSymbol.Zephiron.field_2056.ToVector2() / 2).Rounded());
+            class_135.method_272(Textures.HoleSymbol.Zephiron, (class_187.field_1742.method_491(SeparationHoleHex, Vector2.Zero).Rotated(uco.field_1985) + uco.field_1984 - (Textures.HoleSymbol.Zephiron.field_2056.ToVector2() / 2)).Rounded());
             int irisFrame = 15;
             bool afterIrisOpens = false;
             Molecule risingAtom = null;
@@ -522,7 +541,7 @@ public static class Glyphs
                 if (OccupiedHexes.Contains(part.method_1184(nettingHexes[i])))
                 {
                     // if hex contains a part, disable it
-                    invertedNetMask |= (1 << i);
+                    invertedNetMask |= 1 << i;
                 }
             }
 
@@ -974,12 +993,12 @@ public static class Glyphs
                         if (cataclysmState.ZephironCount < 6)
                         {
                             cataclysmState.ZephironCount++;
-                            //Brimstone.API.PlaySound(sim, CataclysmConsume);
+                            Brimstone.API.PlaySound(sim, CataclysmConsumeSound);
                         }
                         else
                         {
                             // todo: flash
-                            //Brimstone.API.PlaySound(sim, CataclysmDiscard);
+                            Brimstone.API.PlaySound(sim, CataclysmDiscardSound);
                         }
                     tryTransmute:
                         if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom) || !sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
@@ -1003,16 +1022,18 @@ public static class Glyphs
                             // no zwphiron
                             goto tryEject;
                         }
-                        if (bowlVolic.field_2280 != Atoms.Frixon && bowlVolic.field_2280 != Atoms.Gelaron)
+                        bool transfusingFrixon = bowlVolic.field_2280 == Atoms.Frixon;
+                        if (!transfusingFrixon && bowlVolic.field_2280 != Atoms.Gelaron)
                         {
                             // no volic.
                             goto tryEject;
                         }
                         // transfuse
-                        Brimstone.API.ChangeAtom(bowlZephiron, bowlVolic.field_2280 == Atoms.Gelaron ? Atoms.Frixon : Atoms.Gelaron);
+                        Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
                         Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
-                        bowlVolic.field_2279.field_2276 = new class_168(seb, (enum_7)0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
-                        bowlZephiron.field_2279.field_2276 = new class_168(seb, (enum_7)0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                        bowlVolic.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                        bowlZephiron.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                        Brimstone.API.PlaySound(sim, transfusingFrixon ? CataclysmTransfuseFrix : CataclysmTransfuseGel);
                     tryEject:
                         if (cataclysmState.ZephironCount == 0 || sim.FindAtomRelative(part, CataclysmIrisHex).method_1085())
                         {
@@ -1021,6 +1042,7 @@ public static class Glyphs
                         }
                         cataclysmState.ZephironCount--;
                         Brimstone.API.AddSmallCollider(sim, part, CataclysmIrisHex);
+                        Brimstone.API.PlaySound(sim, CataclysmEjectSound);
                         pss[part].field_2743 = true;
                         pss[part].field_2744 = new AtomType[] { Atoms.Zephiron };
                     setState:
