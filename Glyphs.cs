@@ -52,16 +52,16 @@ public static class Glyphs
     #endregion
 
     #region Sounds
-    public static Sound SeparationSound, FixationSound, ConsolidationSound, PutrefactionSound, CataclysmConsumeSound, CataclysmDiscardSound, CataclysmEjectSound, CataclysmTransfuseFrix, CataclysmTransfuseGel;
+    public static Sound PutrefactionSound, ConsolidationSound, SeparationSound, FixationSound, CataclysmConsumeSound, CataclysmDiscardSound, CataclysmEjectSound, CataclysmTransfuseFrix, CataclysmTransfuseGel;
 
     public static void LoadSounds()
     {
         string contentDir = Brimstone.API.GetContentPath("Neuvolics").method_1087();
 
+        PutrefactionSound = Brimstone.API.GetSound(contentDir, "sounds/putrefaction").method_1087();
+        ConsolidationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
         SeparationSound = Brimstone.API.GetSound(contentDir, "sounds/separation").method_1087();
         FixationSound = Brimstone.API.GetSound(contentDir, "sounds/fixation").method_1087();
-        ConsolidationSound = Brimstone.API.GetSound(contentDir, "sounds/consolidation").method_1087();
-        PutrefactionSound = Brimstone.API.GetSound(contentDir, "sounds/putrefaction").method_1087();
         CataclysmConsumeSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmConsume").method_1087();
         CataclysmDiscardSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmDiscard").method_1087();
         CataclysmEjectSound = Brimstone.API.GetSound(contentDir, "sounds/cataclysmEject").method_1087();
@@ -72,13 +72,13 @@ public static class Glyphs
         FieldInfo field = typeof(class_11).GetField("field_52", BindingFlags.Static | BindingFlags.NonPublic);
         Dictionary<string, float> volumeDictionary = (Dictionary<string, float>)field.GetValue(null);
 
-        volumeDictionary.Add("separation", 0.5f);
-        volumeDictionary.Add("fixation", 0.5f);
-        volumeDictionary.Add("consolidation", 0.5f);
-        volumeDictionary.Add("putrefaction", 0.5f);
-        volumeDictionary.Add("cataclysmConsume", 0.4f);
-        volumeDictionary.Add("cataclysmDiscard", 0.5f);
-        volumeDictionary.Add("cataclysmEject", 0.4f);
+        volumeDictionary.Add("putrefaction", 0.3f);
+        volumeDictionary.Add("consolidation", 0.4f);
+        volumeDictionary.Add("separation", 0.4f);
+        volumeDictionary.Add("fixation", 0.4f);
+        volumeDictionary.Add("cataclysmConsume", 0.2f);
+        volumeDictionary.Add("cataclysmDiscard", 0.2f);
+        volumeDictionary.Add("cataclysmEject", 0.3f);
         volumeDictionary.Add("cataclysmTransfuseFrix", 0.4f);
         volumeDictionary.Add("cataclysmTransfuseGel", 0.4f);
     }
