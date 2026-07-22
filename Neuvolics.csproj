@@ -37,6 +37,7 @@
 	<ItemGroup>
 		<Folder Include="Content\sounds\" />
 		<Folder Include="Content\textures\parts\erikhaag\Neuvolics\icons\" />
+		<Folder Include="Content\textures\parts\erikhaag\Neuvolics\Cataclysm\" />
 		<Folder Include="Content\textures\select\erikhaag\Neuvolics\" />
 	</ItemGroup>
 

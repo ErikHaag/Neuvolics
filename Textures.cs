@@ -38,7 +38,9 @@ public static class Textures
 
     public static class Putrefaction
     {
-        public static readonly Texture Base = class_238.field_1989.field_90.field_213;
+        public static readonly Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Putrefaction/base");
+        public static readonly Texture Solder = Brimstone.API.GetTexture(glyphTexturePath + "Putrefaction/solder");
+        public static readonly Texture RatsNest = Brimstone.API.GetTexture(glyphTexturePath + "Putrefaction/rats_nest");
     }
 
     public static class Consolidation
@@ -83,7 +85,12 @@ public static class Textures
 
     public static class Cataclysm
     {
-        public static readonly Texture Base = class_238.field_1989.field_90.field_213;
+        public static readonly Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/base");
+        public static readonly Texture Bowl1Overlay = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/bowl1_overlay");
+        public static readonly Texture Bowl2Overlay = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/bowl2_overlay");
+        public static readonly Texture ZephironInput = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/zephiron_input");
+        public static readonly Texture ZephironIrisBase = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/zephiron_output_under_iris");
+        public static readonly Texture ZephironIrisLip = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/zephiron_output_above_iris");
     }
 
     public static class HoleSymbol

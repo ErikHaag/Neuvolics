@@ -45,10 +45,10 @@ public static class Glyphs
     public static readonly HexIndex PutrefactionHole1Hex = new(0, -1);
     public static readonly HexIndex PutrefactionHole2Hex = new(-1, 1);
 
-    public static readonly HexIndex CataclysmHoleHex = new(-1, 0);
+    public static readonly HexIndex CataclysmHoleHex = new(-1, 1);
     public static readonly HexIndex CataclysmIrisHex = new(0, 0);
-    public static readonly HexIndex CataclysmBowl1Hex = new(0, 1);
-    public static readonly HexIndex CataclysmBowl2Hex = new(1, -1);
+    public static readonly HexIndex CataclysmBowl1Hex = new(1, 0);
+    public static readonly HexIndex CataclysmBowl2Hex = new(0, -1);
     #endregion
 
     #region Sounds
@@ -348,6 +348,8 @@ public static class Glyphs
             Vector2 pivot = new(83f, 119f);
             Vector2 offset = new(0, -1f);
             renderer.method_523(Textures.Putrefaction.Base, offset, pivot, 0);
+            renderer.method_523(Textures.Putrefaction.Solder, offset, pivot, 0);
+            renderer.method_523(Textures.Putrefaction.RatsNest, offset, pivot, 0);
 
             HexIndex[] holes = new HexIndex[]
             {
@@ -571,8 +573,8 @@ public static class Glyphs
                 }
             }
 
-            Vector2 pivot = new(122f, 191f);
-            Vector2 offset = new(-1f, -1f);
+            Vector2 pivot = new(122, 191);
+            Vector2 offset = Vector2.Zero;
             renderer.method_523(Textures.Fixation.Base, offset, pivot, 0);
 
             for (int i = 0; i < nettingHexes.Length; i++)
@@ -677,17 +679,20 @@ public static class Glyphs
             class_236 uco = editor.method_1989(part, pos);
             float time = editor.method_504();
 
-            Vector2 pivot = new(82, 120);
+            Vector2 pivot = new(123, 120);
             Vector2 offset = Vector2.Zero;
 
-            renderer.method_523(Textures.Cataclysm.Base, offset, pivot, (float)Math.PI);
-            renderer.method_530(class_238.field_1989.field_90.field_255.field_293, CataclysmHoleHex, 0);
+            renderer.method_523(Textures.Cataclysm.Base, offset, pivot, 0);
+            renderer.method_530(Textures.Cataclysm.ZephironInput, CataclysmHoleHex, 0);
             renderer.method_529(Textures.HoleSymbol.Zephiron, CataclysmHoleHex, Vector2.Zero);
-            foreach (HexIndex h in new HexIndex[] { CataclysmBowl1Hex, CataclysmBowl2Hex })
-            {
-                renderer.method_528(class_238.field_1989.field_90.field_170, h, Vector2.Zero);
-                renderer.method_529(Textures.BowlSymbol.Volic, h, Vector2.Zero);
-            }
+
+            renderer.method_528(class_238.field_1989.field_90.field_255.field_292, CataclysmBowl1Hex, Vector2.Zero);
+            renderer.method_529(Textures.BowlSymbol.Volic, CataclysmBowl1Hex, Vector2.Zero);
+            renderer.method_530(Textures.Cataclysm.Bowl1Overlay, CataclysmBowl1Hex, 0);
+
+            renderer.method_528(class_238.field_1989.field_90.field_255.field_292, CataclysmBowl2Hex, Vector2.Zero);
+            renderer.method_529(Textures.BowlSymbol.Volic, CataclysmBowl2Hex, Vector2.Zero);
+            renderer.method_530(Textures.Cataclysm.Bowl2Overlay, CataclysmBowl2Hex, 0);
 
             // irises
             int irisFrame = 15;
@@ -695,7 +700,7 @@ public static class Glyphs
             Molecule risingAtom = null;
             Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(CataclysmIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, CataclysmIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Cataclysm.ZephironIrisBase, CataclysmIrisHex, Vector2.Zero);
             if (pss.field_2743)
             {
                 irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
@@ -708,7 +713,7 @@ public static class Glyphs
                 }
             }
             renderer.method_529(Textures.Irises.Zephiron[irisFrame], CataclysmIrisHex, Vector2.Zero);
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, CataclysmIrisHex, Vector2.Zero);
+            renderer.method_528(Textures.Cataclysm.ZephironIrisLip, CataclysmIrisHex, Vector2.Zero);
             if (pss.field_2743 && afterIrisOpens)
             {
                 // show atom rising infront of iris
