@@ -1,5 +1,5 @@
 ﻿using Texture = class_256;
-
+using LightingTexture = class_126;
 namespace Neuvolics;
 
 public static class Textures
@@ -86,6 +86,7 @@ public static class Textures
     public static class Cataclysm
     {
         public static readonly Texture Base = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/base");
+        public static readonly LightingTexture Pentacle = Brimstone.API.GetLighting(glyphTexturePath + "Cataclysm/pentacle.lighting");
         public static readonly Texture Bowl1Overlay = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/bowl1_overlay");
         public static readonly Texture Bowl2Overlay = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/bowl2_overlay");
         public static readonly Texture ZephironInput = Brimstone.API.GetTexture(glyphTexturePath + "Cataclysm/zephiron_input");

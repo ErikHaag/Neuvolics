@@ -1,5 +1,5 @@
 ﻿Name: Neuvolics
-Version: 1.2.2
+Version: 1.2.3
 Icon: nv_icon
 Desc: Introduces Charlie's Neuvolics elements.
 DLL: Neuvolics.dll
@@ -7,7 +7,7 @@ Dependences:
   - Name: Quintessential
     Version: 0.5.1
   - Name: Brimstone
-    Version: 2.0.1
+    Version: 2.0.3
 OptionalDependencies:
   - Name: HalvingMetallurgy
     Version: 4.2.0

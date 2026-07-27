@@ -683,6 +683,9 @@ public static class Glyphs
             Vector2 offset = Vector2.Zero;
 
             renderer.method_523(Textures.Cataclysm.Base, offset, pivot, 0);
+            renderer.method_527(Textures.Cataclysm.Pentacle, CataclysmIrisHex, offset, pivot, 0);
+
+
             renderer.method_530(Textures.Cataclysm.ZephironInput, CataclysmHoleHex, 0);
             renderer.method_529(Textures.HoleSymbol.Zephiron, CataclysmHoleHex, Vector2.Zero);
 
@@ -719,6 +722,7 @@ public static class Glyphs
                 // show atom rising infront of iris
                 Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
             }
+
         });
 
         #endregion
