@@ -538,7 +538,8 @@ public static class Glyphs
                 goto FixationDrawing;
             }
 
-        NetRemoval: for (int i = 0; i < nettingHexes.Length; i++)
+        NetRemoval:
+            for (int i = 0; i < nettingHexes.Length; i++)
             {
                 if (OccupiedHexes.Contains(part.method_1184(nettingHexes[i])))
                 {
@@ -548,7 +549,8 @@ public static class Glyphs
             }
 
 
-        FixationDrawing: int atomsPresent = 0;
+        FixationDrawing:
+            int atomsPresent = 0;
             HexIndex[] holes = new HexIndex[] { FixationHole1Hex, FixationHole2Hex, FixationHole3Hex };
             foreach (HexIndex h in holes)
             {
@@ -727,370 +729,367 @@ public static class Glyphs
 
         #endregion
 
-        QApi.RunAfterCycle(static (sim, first) =>
+        QApi.RunDuringCycle(static (sim, part, pss, first) =>
         {
             SolutionEditorBase seb = sim.field_3818;
-            Dictionary<Part, PartSimState> pss = sim.field_3821;
-            List<Part> parts = seb.method_502().field_3919;
 
-            foreach (var part in parts)
+            PartType type = part.method_1159();
+            if (type == Putrefaction)
             {
-                PartType type = part.method_1159();
-                if (type == Putrefaction)
+                HexIndex bowl = part.method_1184(PutrefactionBowlHex);
+                HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
+                HexIndex hole2 = part.method_1184(PutrefactionHole2Hex);
+                if (!sim.FindAtom(bowl).method_99(out AtomReference bowlAtom))
                 {
-                    HexIndex bowl = part.method_1184(PutrefactionBowlHex);
-                    HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
-                    HexIndex hole2 = part.method_1184(PutrefactionHole2Hex);
-                    if (!sim.FindAtom(bowl).method_99(out AtomReference bowlAtom))
+                    //bowl empty
+                    return;
+                }
+
+                int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
+                if (neumetalIndex == -1)
+                {
+                    // invalid atom
+                    return;
+                }
+
+                bool consumeHole1 = sim.FindAtom(hole1).method_99(out AtomReference hole1Atom) && !hole1Atom.field_2281 && !hole1Atom.field_2282;
+                bool consumeHole2 = sim.FindAtom(hole2).method_99(out AtomReference hole2Atom) && !hole2Atom.field_2281 && !hole2Atom.field_2282;
+
+                if (consumeHole1)
+                {
+                    if (hole1Atom.field_2280 == Atoms.Frixon)
                     {
-                        //bowl empty
+                        neumetalIndex += 1;
+                    }
+                    else if (hole1Atom.field_2280 == Atoms.Gelaron)
+                    {
+                        neumetalIndex -= 1;
+                    }
+                    else
+                    {
+                        consumeHole1 = false;
+                    }
+                }
+                if (consumeHole2)
+                {
+                    if (hole2Atom.field_2280 == Atoms.Frixon)
+                    {
+                        neumetalIndex += 1;
+                    }
+                    else if (hole2Atom.field_2280 == Atoms.Gelaron)
+                    {
+                        neumetalIndex -= 1;
+                    }
+                    else
+                    {
+                        consumeHole2 = false;
+                    }
+                }
+
+                if (!consumeHole1 && !consumeHole2)
+                {
+                    // neither atom could be consumed
+                    return;
+                }
+
+                if (consumeHole1)
+                {
+                    Brimstone.API.RemoveAtom(hole1Atom);
+                    Brimstone.API.DrawFallingAtom(seb, hole1Atom);
+                }
+                if (consumeHole2)
+                {
+                    Brimstone.API.RemoveAtom(hole2Atom);
+                    Brimstone.API.DrawFallingAtom(seb, hole2Atom);
+                }
+
+                Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
+                Brimstone.API.PlaySound(sim, PutrefactionSound);
+                bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
+
+            }
+            else if (type == Consolidation)
+            {
+                if (first)
+                {
+                    HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
+                    HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
+                    HexIndex ia = part.method_1184(ConsolidationZephironIrisHex);
+
+                    if (sim.FindAtom(ia).method_1085())
+                    {
+                        // blocked!
+                        return;
+                    }
+                    if (!sim.FindAtom(h1).method_99(out AtomReference a1) || a1.field_2281 || a1.field_2282)
+                    {
+                        return;
+                    }
+                    if (!sim.FindAtom(h2).method_99(out AtomReference a2) || a2.field_2281 || a2.field_2282)
+                    {
+                        return;
+                    }
+
+                    if ((a1.field_2280 != Atoms.Frixon || a2.field_2280 != Atoms.Gelaron) && (a1.field_2280 != Atoms.Gelaron || a2.field_2280 != Atoms.Frixon))
+                    {
+                        return;
+                    }
+
+                    Brimstone.API.RemoveAtom(a1);
+                    Brimstone.API.RemoveAtom(a2);
+
+                    Brimstone.API.DrawFallingAtom(seb, a1);
+                    Brimstone.API.DrawFallingAtom(seb, a2);
+
+                    Brimstone.API.AddSmallCollider(sim, part, ConsolidationZephironIrisHex);
+                    pss.field_2743 = true;
+                    pss.field_2744 = new AtomType[1] { Atoms.Zephiron };
+
+                    Brimstone.API.PlaySound(sim, ConsolidationSound);
+                }
+                else if (pss.field_2743)
+                {
+                    Brimstone.API.AddAtom(sim, part, ConsolidationZephironIrisHex, pss.field_2744[0]);
+                }
+            }
+            else if (type == Separation)
+            {
+                if (first)
+                {
+                    HexIndex h = part.method_1184(SeparationHoleHex);
+                    HexIndex iF = part.method_1184(SeparationFrixonIrisHex);
+                    HexIndex iP = part.method_1184(SeparationGelaronIrisHex);
+
+                    if (sim.FindAtom(iF).method_1085() || sim.FindAtom(iP).method_1085())
+                    {
+                        // blocked!
+                        return;
+                    }
+
+                    if (!sim.FindAtom(h).method_99(out AtomReference holeAtom))
+                    {
+                        // no atom above hole
+                        return;
+                    }
+
+                    if (holeAtom.field_2280 != Atoms.Zephiron || holeAtom.field_2281 || holeAtom.field_2282)
+                    {
+                        return;
+                    }
+
+                    // an unheld, elemental zephiron atom is above the hole, and neither iris is covered
+                    Brimstone.API.RemoveAtom(holeAtom);
+                    Brimstone.API.DrawFallingAtom(seb, holeAtom);
+
+                    Brimstone.API.AddSmallCollider(sim, part, SeparationGelaronIrisHex);
+                    Brimstone.API.AddSmallCollider(sim, part, SeparationFrixonIrisHex);
+
+                    pss.field_2743 = true;
+                    pss.field_2744 = new AtomType[2] { Atoms.Gelaron, Atoms.Frixon };
+
+                    Brimstone.API.PlaySound(sim, SeparationSound);
+                }
+                else if (pss.field_2743)
+                {
+                    Brimstone.API.AddAtom(sim, part, SeparationGelaronIrisHex, pss.field_2744[0]);
+                    Brimstone.API.AddAtom(sim, part, SeparationFrixonIrisHex, pss.field_2744[1]);
+                }
+            }
+            else if (type == Fixation)
+            {
+                if (first)
+                {
+                    HexIndex hLeft = part.method_1184(FixationHole1Hex);
+                    HexIndex hCenter = part.method_1184(FixationHole2Hex);
+                    HexIndex hRight = part.method_1184(FixationHole3Hex);
+                    HexIndex iZ = part.method_1184(FixationZephironIrisHex);
+                    HexIndex iN = part.method_1184(FixationNeumetalIrisHex);
+
+                    if (sim.FindAtom(iZ).method_1085() || sim.FindAtom(iN).method_1085())
+                    {
+                        // blocked!
+                        return;
+                    }
+
+                    AtomReference neumetal = null;
+                    AtomReference volic1 = null;
+                    AtomReference volic2 = null;
+
+                    int neumetalIndex = -1;
+
+                    HexIndex[] holes = new HexIndex[] { hLeft, hCenter, hRight };
+                    foreach (HexIndex h in holes)
+                    {
+                        if (!sim.FindAtom(h).method_99(out AtomReference r) || r.field_2281 || r.field_2282)
+                        {
+                            // atom not present, not a singleton, or is held
+                            return;
+                        }
+                        if (r.field_2280 == Atoms.Gelaron || r.field_2280 == Atoms.Frixon)
+                        {
+                            if (volic1 == null)
+                            {
+                                volic1 = r;
+                                continue;
+                            }
+                            if (r.field_2280 != volic1.field_2280)
+                            {
+                                // second FN is different from the first
+                                return;
+                            }
+                            if (volic2 == null)
+                            {
+                                volic2 = r;
+                                continue;
+                            }
+
+                            return;
+                        }
+                        if (neumetalIndex != -1)
+                        {
+                            // second neumetal, or invalid atom
+                            return;
+                        }
+                        neumetalIndex = API.GetNeumetalIndex(r.field_2280);
+                        if (neumetalIndex == -1)
+                        {
+                            // invalid atom present
+                            return;
+                        }
+                        neumetal = r;
+                    }
+
+
+                    int delta = volic1.field_2280 == Atoms.Gelaron ? -1 : 1;
+
+                    Brimstone.API.RemoveAtom(neumetal);
+                    Brimstone.API.RemoveAtom(volic1);
+                    Brimstone.API.RemoveAtom(volic2);
+
+                    Brimstone.API.DrawFallingAtom(seb, neumetal);
+                    Brimstone.API.DrawFallingAtom(seb, volic1);
+                    Brimstone.API.DrawFallingAtom(seb, volic2);
+
+                    Brimstone.API.AddSmallCollider(sim, part, FixationZephironIrisHex);
+                    Brimstone.API.AddSmallCollider(sim, part, FixationNeumetalIrisHex);
+
+                    pss.field_2743 = true;
+                    pss.field_2744 = new AtomType[2] { Atoms.Zephiron, API.GetNeumetalAtom(neumetalIndex + delta) };
+
+                    Brimstone.API.PlaySound(sim, FixationSound);
+                }
+                else if (pss.field_2743)
+                {
+                    Brimstone.API.AddAtom(sim, part, FixationZephironIrisHex, pss.field_2744[0]);
+                    Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss.field_2744[1]);
+                }
+            }
+            else if (type == Cataclysm)
+            {
+                if (first)
+                {
+                    DynamicData pss_data = new(pss);
+                    object stateObj = pss_data.Get("state");
+                    CataclysmState cataclysmState = stateObj is not null ? (CataclysmState)stateObj : new();
+                    if (!(sim.FindAtomRelative(part, CataclysmHoleHex).method_99(out AtomReference zephiron) && zephiron.field_2280 == Atoms.Zephiron && !zephiron.field_2281 && !zephiron.field_2282))
+                    {
+                        goto tryTransmute;
+                    }
+                    Brimstone.API.RemoveAtom(zephiron);
+                    Brimstone.API.DrawFallingAtom(seb, zephiron);
+                    if (cataclysmState.ZephironCount < 6)
+                    {
+                        cataclysmState.ZephironCount++;
+                        Brimstone.API.PlaySound(sim, CataclysmConsumeSound);
+                    }
+                    else
+                    {
+                        // todo: flash
+                        Brimstone.API.PlaySound(sim, CataclysmDiscardSound);
+                    }
+                tryTransmute:
+                    if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom) || !sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
+                    {
+                        goto tryEject;
+                    }
+                    AtomReference bowlVolic = null;
+                    AtomReference bowlZephiron = null;
+                    if (bowl1Atom.field_2280 == Atoms.Zephiron)
+                    {
+                        bowlVolic = bowl2Atom;
+                        bowlZephiron = bowl1Atom;
+                    }
+                    else if (bowl2Atom.field_2280 == Atoms.Zephiron)
+                    {
+                        bowlVolic = bowl1Atom;
+                        bowlZephiron = bowl2Atom;
+                    }
+                    else
+                    {
+                        // no zephiron
+                        goto tryEject;
+                    }
+                    bool transfusingFrixon = bowlVolic.field_2280 == Atoms.Frixon;
+                    if (!transfusingFrixon && bowlVolic.field_2280 != Atoms.Gelaron)
+                    {
+                        // no volic.
+                        goto tryEject;
+                    }
+                    // transfuse
+                    Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
+                    Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
+                    bowlVolic.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                    bowlZephiron.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
+                    Brimstone.API.PlaySound(sim, transfusingFrixon ? CataclysmTransfuseFrix : CataclysmTransfuseGel);
+                tryEject:
+                    if (cataclysmState.ZephironCount == 0 || sim.FindAtomRelative(part, CataclysmIrisHex).method_1085())
+                    {
+                        // blocked!
+                        goto setState;
+                    }
+                    cataclysmState.ZephironCount--;
+                    Brimstone.API.AddSmallCollider(sim, part, CataclysmIrisHex);
+                    Brimstone.API.PlaySound(sim, CataclysmEjectSound);
+                    pss.field_2743 = true;
+                    pss.field_2744 = new AtomType[] { Atoms.Zephiron };
+                setState:
+                    pss_data.Set("state", cataclysmState);
+                }
+                else if (pss.field_2743)
+                {
+                    Brimstone.API.AddAtom(sim, part, CataclysmIrisHex, pss.field_2744[0]);
+                }
+            }
+            else if (type == class_191.field_1775) // triplex bonder
+            {
+                foreach (class_222 bonder in type.field_1538)
+                {
+                    HexIndex l = part.method_1184(bonder.field_1920);
+                    HexIndex r = part.method_1184(bonder.field_1921);
+                    if (!sim.FindAtom(l).method_99(out AtomReference leftAtom) || !sim.FindAtom(r).method_99(out AtomReference rightAtom))
+                    {
                         continue;
                     }
-
-                    int neumetalIndex = API.GetNeumetalIndex(bowlAtom.field_2280);
-                    if (neumetalIndex == -1)
+                    bool isLeftFire = leftAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
+                                      || (MainClass.HalvingMetallurgyLoaded && leftAtom.field_2280 == ImportManager.Fields.HMVulcan);
+                    bool isLeftNeuvolic = leftAtom.field_2280 == Atoms.Frixon
+                                          || leftAtom.field_2280 == Atoms.Gelaron
+                                          || leftAtom.field_2280 == Atoms.Azulum
+                                          || leftAtom.field_2280 == Atoms.Iridium;
+                    bool isRightFire = rightAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
+                                       || (MainClass.HalvingMetallurgyLoaded && rightAtom.field_2280 == ImportManager.Fields.HMVulcan);
+                    bool isRightNeuvolic = rightAtom.field_2280 == Atoms.Frixon
+                                           || rightAtom.field_2280 == Atoms.Gelaron
+                                           || rightAtom.field_2280 == Atoms.Azulum
+                                           || rightAtom.field_2280 == Atoms.Iridium;
+                    // isLeftFire && isRightFire is handled by Vanilla or HM
+                    if ((isLeftFire && isRightNeuvolic) || (isLeftNeuvolic && isRightFire) || (isLeftNeuvolic && isRightNeuvolic))
                     {
-                        // invalid atom
-                        continue;
-                    }
 
-                    bool consumeHole1 = sim.FindAtom(hole1).method_99(out AtomReference hole1Atom) && !hole1Atom.field_2281 && !hole1Atom.field_2282;
-                    bool consumeHole2 = sim.FindAtom(hole2).method_99(out AtomReference hole2Atom) && !hole2Atom.field_2281 && !hole2Atom.field_2282;
-
-                    if (consumeHole1)
-                    {
-                        if (hole1Atom.field_2280 == Atoms.Frixon)
-                        {
-                            neumetalIndex += 1;
-                        }
-                        else if (hole1Atom.field_2280 == Atoms.Gelaron)
-                        {
-                            neumetalIndex -= 1;
-                        }
-                        else
-                        {
-                            consumeHole1 = false;
-                        }
-                    }
-                    if (consumeHole2)
-                    {
-                        if (hole2Atom.field_2280 == Atoms.Frixon)
-                        {
-                            neumetalIndex += 1;
-                        }
-                        else if (hole2Atom.field_2280 == Atoms.Gelaron)
-                        {
-                            neumetalIndex -= 1;
-                        }
-                        else
-                        {
-                            consumeHole2 = false;
-                        }
-                    }
-
-                    if (!consumeHole1 && !consumeHole2)
-                    {
-                        // neither atom could be consumed
-                        continue;
-                    }
-
-                    if (consumeHole1)
-                    {
-                        Brimstone.API.RemoveAtom(hole1Atom);
-                        Brimstone.API.DrawFallingAtom(seb, hole1Atom);
-                    }
-                    if (consumeHole2)
-                    {
-                        Brimstone.API.RemoveAtom(hole2Atom);
-                        Brimstone.API.DrawFallingAtom(seb, hole2Atom);
-                    }
-
-                    Brimstone.API.ChangeAtom(bowlAtom, API.GetNeumetalAtom(neumetalIndex));
-                    Brimstone.API.PlaySound(sim, PutrefactionSound);
-                    bowlAtom.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlAtom.field_2280, class_238.field_1989.field_81.field_614, 30f);
-
-                }
-                else if (type == Consolidation)
-                {
-                    if (first)
-                    {
-                        HexIndex h1 = part.method_1184(ConsolidationHole1Hex);
-                        HexIndex h2 = part.method_1184(ConsolidationHole2Hex);
-                        HexIndex ia = part.method_1184(ConsolidationZephironIrisHex);
-
-                        if (sim.FindAtom(ia).method_1085())
-                        {
-                            // blocked!
-                            continue;
-                        }
-                        if (!sim.FindAtom(h1).method_99(out AtomReference a1) || a1.field_2281 || a1.field_2282)
-                        {
-                            continue;
-                        }
-                        if (!sim.FindAtom(h2).method_99(out AtomReference a2) || a2.field_2281 || a2.field_2282)
-                        {
-                            continue;
-                        }
-
-                        if ((a1.field_2280 != Atoms.Frixon || a2.field_2280 != Atoms.Gelaron) && (a1.field_2280 != Atoms.Gelaron || a2.field_2280 != Atoms.Frixon))
-                        {
-                            continue;
-                        }
-
-                        Brimstone.API.RemoveAtom(a1);
-                        Brimstone.API.RemoveAtom(a2);
-
-                        Brimstone.API.DrawFallingAtom(seb, a1);
-                        Brimstone.API.DrawFallingAtom(seb, a2);
-
-                        Brimstone.API.AddSmallCollider(sim, part, ConsolidationZephironIrisHex);
-                        pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[1] { Atoms.Zephiron };
-
-                        Brimstone.API.PlaySound(sim, ConsolidationSound);
-                    }
-                    else if (pss[part].field_2743)
-                    {
-                        Brimstone.API.AddAtom(sim, part, ConsolidationZephironIrisHex, pss[part].field_2744[0]);
+                        Brimstone.API.JoinMolecules(sim, leftAtom.field_2277, rightAtom.field_2277, out Molecule joined);
+                        Brimstone.API.AddBond(sim, joined, l, r, bonder.field_1922);
                     }
                 }
-                else if (type == Separation)
-                {
-                    if (first)
-                    {
-                        HexIndex h = part.method_1184(SeparationHoleHex);
-                        HexIndex iF = part.method_1184(SeparationFrixonIrisHex);
-                        HexIndex iP = part.method_1184(SeparationGelaronIrisHex);
-
-                        if (sim.FindAtom(iF).method_1085() || sim.FindAtom(iP).method_1085())
-                        {
-                            // blocked!
-                            continue;
-                        }
-
-                        if (!sim.FindAtom(h).method_99(out AtomReference holeAtom))
-                        {
-                            // no atom above hole
-                            continue;
-                        }
-
-                        if (holeAtom.field_2280 != Atoms.Zephiron || holeAtom.field_2281 || holeAtom.field_2282)
-                        {
-                            continue;
-                        }
-
-                        // an unheld, elemental zephiron atom is above the hole, and neither iris is covered
-                        Brimstone.API.RemoveAtom(holeAtom);
-                        Brimstone.API.DrawFallingAtom(seb, holeAtom);
-
-                        Brimstone.API.AddSmallCollider(sim, part, SeparationGelaronIrisHex);
-                        Brimstone.API.AddSmallCollider(sim, part, SeparationFrixonIrisHex);
-
-                        pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[2] { Atoms.Gelaron, Atoms.Frixon };
-
-                        Brimstone.API.PlaySound(sim, SeparationSound);
-                    }
-                    else if (pss[part].field_2743)
-                    {
-                        Brimstone.API.AddAtom(sim, part, SeparationGelaronIrisHex, pss[part].field_2744[0]);
-                        Brimstone.API.AddAtom(sim, part, SeparationFrixonIrisHex, pss[part].field_2744[1]);
-                    }
-                }
-                else if (type == Fixation)
-                {
-                    if (first)
-                    {
-                        HexIndex hLeft = part.method_1184(FixationHole1Hex);
-                        HexIndex hCenter = part.method_1184(FixationHole2Hex);
-                        HexIndex hRight = part.method_1184(FixationHole3Hex);
-                        HexIndex iZ = part.method_1184(FixationZephironIrisHex);
-                        HexIndex iN = part.method_1184(FixationNeumetalIrisHex);
-
-                        if (sim.FindAtom(iZ).method_1085() || sim.FindAtom(iN).method_1085())
-                        {
-                            // blocked!
-                            continue;
-                        }
-
-                        AtomReference neumetal = null;
-                        AtomReference volic1 = null;
-                        AtomReference volic2 = null;
-
-                        int neumetalIndex = -1;
-
-                        HexIndex[] holes = new HexIndex[] { hLeft, hCenter, hRight };
-                        foreach (HexIndex h in holes)
-                        {
-                            if (!sim.FindAtom(h).method_99(out AtomReference r) || r.field_2281 || r.field_2282)
-                            {
-                                // atom not present, not a singleton, or is held
-                                goto nextGlyph;
-                            }
-                            if (r.field_2280 == Atoms.Gelaron || r.field_2280 == Atoms.Frixon)
-                            {
-                                if (volic1 == null)
-                                {
-                                    volic1 = r;
-                                    continue;
-                                }
-                                if (r.field_2280 != volic1.field_2280)
-                                {
-                                    // second FN is different from the first
-                                    goto nextGlyph;
-                                }
-                                if (volic2 == null)
-                                {
-                                    volic2 = r;
-                                    continue;
-                                }
-
-                                goto nextGlyph;
-                            }
-                            if (neumetalIndex != -1)
-                            {
-                                // second neumetal, or invalid atom
-                                goto nextGlyph;
-                            }
-                            neumetalIndex = API.GetNeumetalIndex(r.field_2280);
-                            if (neumetalIndex == -1)
-                            {
-                                // invalid atom present
-                                goto nextGlyph;
-                            }
-                            neumetal = r;
-                        }
-
-
-                        int delta = volic1.field_2280 == Atoms.Gelaron ? -1 : 1;
-
-                        Brimstone.API.RemoveAtom(neumetal);
-                        Brimstone.API.RemoveAtom(volic1);
-                        Brimstone.API.RemoveAtom(volic2);
-
-                        Brimstone.API.DrawFallingAtom(seb, neumetal);
-                        Brimstone.API.DrawFallingAtom(seb, volic1);
-                        Brimstone.API.DrawFallingAtom(seb, volic2);
-
-                        Brimstone.API.AddSmallCollider(sim, part, FixationZephironIrisHex);
-                        Brimstone.API.AddSmallCollider(sim, part, FixationNeumetalIrisHex);
-
-                        pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[2] { Atoms.Zephiron, API.GetNeumetalAtom(neumetalIndex + delta) };
-
-                        Brimstone.API.PlaySound(sim, FixationSound);
-                    }
-                    else if (pss[part].field_2743)
-                    {
-                        Brimstone.API.AddAtom(sim, part, FixationZephironIrisHex, pss[part].field_2744[0]);
-                        Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss[part].field_2744[1]);
-                    }
-                }
-                else if (type == Cataclysm)
-                {
-                    if (first)
-                    {
-                        DynamicData pss_data = new(pss[part]);
-                        Object stateObj = pss_data.Get("state");
-                        CataclysmState cataclysmState = stateObj is not null ? (CataclysmState)stateObj : new();
-                        if (!(sim.FindAtomRelative(part, CataclysmHoleHex).method_99(out AtomReference zephiron) && zephiron.field_2280 == Atoms.Zephiron && !zephiron.field_2281 && !zephiron.field_2282))
-                        {
-                            goto tryTransmute;
-                        }
-                        Brimstone.API.RemoveAtom(zephiron);
-                        Brimstone.API.DrawFallingAtom(seb, zephiron);
-                        if (cataclysmState.ZephironCount < 6)
-                        {
-                            cataclysmState.ZephironCount++;
-                            Brimstone.API.PlaySound(sim, CataclysmConsumeSound);
-                        }
-                        else
-                        {
-                            // todo: flash
-                            Brimstone.API.PlaySound(sim, CataclysmDiscardSound);
-                        }
-                    tryTransmute:
-                        if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom) || !sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
-                        {
-                            goto tryEject;
-                        }
-                        AtomReference bowlVolic = null;
-                        AtomReference bowlZephiron = null;
-                        if (bowl1Atom.field_2280 == Atoms.Zephiron)
-                        {
-                            bowlVolic = bowl2Atom;
-                            bowlZephiron = bowl1Atom;
-                        }
-                        else if (bowl2Atom.field_2280 == Atoms.Zephiron)
-                        {
-                            bowlVolic = bowl1Atom;
-                            bowlZephiron = bowl2Atom;
-                        }
-                        else
-                        {
-                            // no zwphiron
-                            goto tryEject;
-                        }
-                        bool transfusingFrixon = bowlVolic.field_2280 == Atoms.Frixon;
-                        if (!transfusingFrixon && bowlVolic.field_2280 != Atoms.Gelaron)
-                        {
-                            // no volic.
-                            goto tryEject;
-                        }
-                        // transfuse
-                        Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
-                        Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
-                        bowlVolic.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
-                        bowlZephiron.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
-                        Brimstone.API.PlaySound(sim, transfusingFrixon ? CataclysmTransfuseFrix : CataclysmTransfuseGel);
-                    tryEject:
-                        if (cataclysmState.ZephironCount == 0 || sim.FindAtomRelative(part, CataclysmIrisHex).method_1085())
-                        {
-                            // blocked!
-                            goto setState;
-                        }
-                        cataclysmState.ZephironCount--;
-                        Brimstone.API.AddSmallCollider(sim, part, CataclysmIrisHex);
-                        Brimstone.API.PlaySound(sim, CataclysmEjectSound);
-                        pss[part].field_2743 = true;
-                        pss[part].field_2744 = new AtomType[] { Atoms.Zephiron };
-                    setState:
-                        pss_data.Set("state", cataclysmState);
-                    }
-                    else if (pss[part].field_2743)
-                    {
-                        Brimstone.API.AddAtom(sim, part, CataclysmIrisHex, pss[part].field_2744[0]);
-                    }
-                }
-                else if (type == class_191.field_1775) // triplex bonder
-                {
-                    foreach (class_222 bonder in type.field_1538)
-                    {
-                        if (!sim.FindAtomRelative(part, bonder.field_1920).method_99(out AtomReference leftAtom) || !sim.FindAtomRelative(part, bonder.field_1921).method_99(out AtomReference rightAtom))
-                        {
-                            continue;
-                        }
-                        bool isLeftFire = leftAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
-                                          || (MainClass.HalvingMetallurgyLoaded && leftAtom.field_2280 == ImportManager.Fields.HMVulcan);
-                        bool isLeftNeuvolic = leftAtom.field_2280 == Atoms.Frixon
-                                              || leftAtom.field_2280 == Atoms.Gelaron
-                                              || leftAtom.field_2280 == Atoms.Azulum
-                                              || leftAtom.field_2280 == Atoms.Iridium;
-                        bool isRightFire = rightAtom.field_2280 == Brimstone.API.VanillaAtoms.fire
-                                           || (MainClass.HalvingMetallurgyLoaded && rightAtom.field_2280 == ImportManager.Fields.HMVulcan);
-                        bool isRightNeuvolic = rightAtom.field_2280 == Atoms.Frixon
-                                               || rightAtom.field_2280 == Atoms.Gelaron
-                                               || rightAtom.field_2280 == Atoms.Azulum
-                                               || rightAtom.field_2280 == Atoms.Iridium;
-                        // isLeftFire && isRightFire is handled by Vanilla or HM
-                        if ((isLeftFire && isRightNeuvolic) || (isLeftNeuvolic && isRightFire) || (isLeftNeuvolic && isRightNeuvolic))
-                        {
-                            Brimstone.API.JoinMoleculesAtHexes(sim, part, bonder.field_1920, bonder.field_1921);
-                            Brimstone.API.AddBond(sim, part, bonder.field_1920, bonder.field_1921, bonder.field_1922);
-                        }
-                    }
-                }
-            nextGlyph:;
             }
         });
     }

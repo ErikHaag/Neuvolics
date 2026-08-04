@@ -17,6 +17,9 @@
 		<Reference Include="Brimstone">
 			<HintPath>$(OpusDir)\Mods\Brimstone\Brimstone.dll</HintPath>
 		</Reference>
+		<Reference Include="FTSIGCTU">
+		  <HintPath>$(OpusDir)\UnpackedMods\FTSIGCTU_0.7.4\FTSIGCTU.dll</HintPath>
+		</Reference>
 		<Reference Include="MMHOOK_ModdedLightning">
 			<HintPath>$(OpusDir)\MMHOOK_ModdedLightning.dll</HintPath>
 		</Reference>

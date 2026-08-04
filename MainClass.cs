@@ -1,4 +1,5 @@
 ﻿using Quintessential;
+using System;
 
 namespace Neuvolics;
 
@@ -11,14 +12,19 @@ public class MainClass : QuintessentialMod
     public const string PutrefactionPermission = "Neuvolics:putrefaction";
     public const string CataclysmPermission = "Neuvolics:cataclysm";
 
+    public static bool FTSIGCTULoaded = Brimstone.API.IsModLoaded("FTSIGCTU");
     public static bool HalvingMetallurgyLoaded = Brimstone.API.IsModLoaded("HalvingMetallurgy");
 
     public override void Load()
     {
         Quintessential.Logger.Log(LogPrefix + "Loaded!");
+        if (FTSIGCTULoaded)
+        {
+            Quintessential.Logger.Log(LogPrefix + "Found FTSIGCTU!");
+        }
         if (HalvingMetallurgyLoaded)
         {
-            Quintessential.Logger.Log(LogPrefix + "Found HM!");
+            Quintessential.Logger.Log(LogPrefix + "Found Halving Metallurgy!");
         }
     }
 
@@ -42,9 +48,36 @@ public class MainClass : QuintessentialMod
         }
     }
 
+    private void AddMapRules()
+    {
+        foreach (class_139 p in new class_139[] { Glyphs.Putrefaction, Glyphs.Consolidation, Glyphs.Separation, Glyphs.Fixation, Glyphs.Cataclysm })
+        {
+            FTSIGCTU.Navigation.PartsMap.addPartHexRule(p, FTSIGCTU.Navigation.PartsMap.glyphRule);
+        }
+    }
+
+    private void AddReflectionRules()
+    {
+        FTSIGCTU.MirrorTool.addRule(Glyphs.Putrefaction, FTSIGCTU.MirrorTool.mirrorSimplePart);
+        FTSIGCTU.MirrorTool.addRule(Glyphs.Consolidation, FTSIGCTU.MirrorTool.mirrorSimplePart);
+        FTSIGCTU.MirrorTool.addRule(Glyphs.Separation, FTSIGCTU.MirrorTool.mirrorSimplePart);
+        FTSIGCTU.MirrorTool.addRule(Glyphs.Fixation, FTSIGCTU.MirrorTool.mirrorVerticalPart0_0);
+        FTSIGCTU.MirrorTool.addRule(Glyphs.Cataclysm, static (ses, part, vert, origin) =>
+        {
+            FTSIGCTU.MirrorTool.shiftRotation(part, HexRotation.Clockwise);
+            FTSIGCTU.MirrorTool.mirrorSimplePart(ses, part, vert, origin);
+            FTSIGCTU.MirrorTool.shiftRotation(part, HexRotation.Counterclockwise);
+            return true;
+        });
+    }
+
     public override void PostLoad()
     {
-
+        if (FTSIGCTULoaded)
+        {
+            AddMapRules();
+            AddReflectionRules();
+        }
     }
 
     public override void Unload()
