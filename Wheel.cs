@@ -90,7 +90,7 @@ public static class Wheel
         for (int index = 0; index < 6; ++index)
         {
             float num = index * sixtyDegrees;
-            typeof(SolutionEditorBase).GetMethod("method_2016", BindingFlags.NonPublic | BindingFlags.).Invoke(seb_self, new object[] { cageSelectGlowTexture, color, class236.field_1984, class236.field_1985 + num });
+            typeof(SolutionEditorBase).GetMethod("method_2016", BindingFlags.NonPublic | BindingFlags.Static).Invoke(seb_self, new object[] { cageSelectGlowTexture, color, class236.field_1984, class236.field_1985 + num });
         }
     }
 

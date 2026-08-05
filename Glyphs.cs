@@ -1070,38 +1070,24 @@ public static class Glyphs
                             // if bowl1 also has Maro's wheel, nothing will happen
                             goto tryEject;
                         }
-                        bowl1Maro = true;
+                        bowl2Maro = true;
                     }
                     else
                     {
                     }
 
-                    int state = 0;
+                    int state = bowl1Maro ? 1 : (bowl2Maro ? 2 : 0);
                     AtomReference bowlVolic = null;
                     AtomReference bowlZephiron = null;
                     if (bowl1Atom.field_2280 == Atoms.Zephiron)
                     {
-                        if (bowl1Maro)
-                        {
-                            state = 2;
-                        }
-                        else if (bowl2Maro)
-                        {
-                            state = 1;
-                        }
+                        state = 3 - state;
                         bowlVolic = bowl2Atom;
                         bowlZephiron = bowl1Atom;
                     }
                     else if (bowl2Atom.field_2280 == Atoms.Zephiron)
                     {
-                        if (bowl1Maro)
-                        {
-                            state = 1;
-                        }
-                        else if (bowl2Maro)
-                        {
-                            state = 2;
-                        }
+                        
                         bowlVolic = bowl1Atom;
                         bowlZephiron = bowl2Atom;
                     }
@@ -1119,13 +1105,14 @@ public static class Glyphs
                     // transfuse
                     if (state != 1)
                     {
-                        Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
+                        Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
                     }
 
                     if (state != 2)
                     {
-                        Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
+                        Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
                     }
+
                     bowlVolic.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
                     bowlZephiron.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
                     Brimstone.API.PlaySound(sim, transfusingFrixon ? CataclysmTransfuseFrix : CataclysmTransfuseGel);

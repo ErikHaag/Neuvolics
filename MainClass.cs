@@ -72,7 +72,7 @@ public class MainClass : QuintessentialMod
             FTSIGCTU.MirrorTool.shiftRotation(part, HexRotation.Counterclockwise);
             return true;
         });
-        FTSIGCTU.MirrorTool.addRule(Wheel.Maro, FTSIGCTU.MirrorTool.mirrorVanillaArm);
+        FTSIGCTU.MirrorTool.addRule(Wheel.Maro, FTSIGCTU.MirrorTool.mirrorSimplePart);
     }
 
     public override void PostLoad()
