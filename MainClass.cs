@@ -11,6 +11,7 @@ public class MainClass : QuintessentialMod
     public const string ConsolidationPermission = "Neuvolics:consolidation";
     public const string PutrefactionPermission = "Neuvolics:putrefaction";
     public const string CataclysmPermission = "Neuvolics:cataclysm";
+    public const string MaroPermission = "Neuvolics:maro";
 
     public static bool FTSIGCTULoaded = Brimstone.API.IsModLoaded("FTSIGCTU");
     public static bool HalvingMetallurgyLoaded = Brimstone.API.IsModLoaded("HalvingMetallurgy");
@@ -30,8 +31,9 @@ public class MainClass : QuintessentialMod
 
     public override void LoadPuzzleContent()
     {
-        Quintessential.Logger.Log(MainClass.LogPrefix + "Initializing...");
+        Quintessential.Logger.Log(LogPrefix + "Initializing...");
         Atoms.AddAtomTypes();
+        Wheel.LoadWheel();
         Glyphs.LoadSounds();
         Glyphs.AddHooks();
         Glyphs.AddGlyphs();
@@ -41,6 +43,7 @@ public class MainClass : QuintessentialMod
         QApi.AddPuzzlePermission(SeparationPermission, "Glyph of Separation", "Neuvolics");
         QApi.AddPuzzlePermission(FixationPermission, "Glyph of Fixation", "Neuvolics");
         QApi.AddPuzzlePermission(CataclysmPermission, "Glyph of Cataclysm", "Neuvolics");
+        QApi.AddPuzzlePermission(MaroPermission, "Maro's Wheel", "Neuvolics");
 
         if (HalvingMetallurgyLoaded)
         {
@@ -69,6 +72,7 @@ public class MainClass : QuintessentialMod
             FTSIGCTU.MirrorTool.shiftRotation(part, HexRotation.Counterclockwise);
             return true;
         });
+        FTSIGCTU.MirrorTool.addRule(Wheel.Maro, FTSIGCTU.MirrorTool.mirrorVanillaArm);
     }
 
     public override void PostLoad()

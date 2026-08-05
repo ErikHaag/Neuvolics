@@ -117,16 +117,21 @@ public static class Glyphs
         IL.Part.method_1193 += OHSUpdatePhage;
         // retreat track end
         IL.Part.method_1194 += OHSUpdatePhage;
-
         //IL.class_282.method_0 += OHSUpdateFromRotationPhage;
+
+        On.SolutionEditorBase.method_1997 += DrawPartSelectionGlows;
+        IL.SolutionEditorBase.method_1984 += InjectDrawMaroAtom;
+
     }
 
     public static void RemoveHooks()
     {
         Quintessential.Logger.Log(MainClass.LogPrefix + "Unhooking");
 
-        //IL.class_282.method_0 -= OHSUpdateFromRotationPhage;
+        IL.SolutionEditorBase.method_1984 -= InjectDrawMaroAtom;
+        On.SolutionEditorBase.method_1997 -= DrawPartSelectionGlows;
 
+        //IL.class_282.method_0 -= OHSUpdateFromRotationPhage;
         IL.Part.method_1194 -= OHSUpdatePhage;
         IL.Part.method_1193 -= OHSUpdatePhage;
         IL.Part.method_1192 -= OHSUpdatePhage;
@@ -141,6 +146,46 @@ public static class Glyphs
         IL.SolutionEditorBase.method_1984 -= ValueTweakerPhage;
 #endif
 
+    }
+
+    internal static void InjectDrawMaroAtom(ILContext context)
+    {
+        ILCursor cursor = new(context);
+        if (!cursor.TryGotoNext(MoveType.After,
+            instr => instr.MatchCallvirt("SolutionEditorBase", "method_2015")))
+        {
+            Logger.Log(MainClass.LogPrefix + "Failed to inject draw call (no method_2015 call)");
+            return;
+        }
+
+        if (!cursor.TryGotoNext(MoveType.After,
+            instr => instr.MatchEndfinally()))
+        {
+            Logger.Log(MainClass.LogPrefix + "Fail to inject draw call (no loop end)");
+            return;
+        }
+
+        cursor.Index++;
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldloc_0);
+        cursor.EmitDelegate<Action<SolutionEditorBase, SolutionEditorBase.class_423>>((self, uco) =>
+        {
+            if (self.method_503() != enum_128.Stopped)
+            {
+                var partList = self.method_502().field_3919;
+                foreach (var maro in partList.Where(x => x.method_1159() == Wheel.Maro))
+                {
+                    Wheel.DrawMaroAtoms(self, maro, uco.field_3959, true);
+                }
+            }
+        });
+    }
+
+    public static void DrawPartSelectionGlows(On.SolutionEditorBase.orig_method_1997 orig, SolutionEditorBase seb_self, Part part, Vector2 pos, float alpha)
+    {
+        if (part.method_1159() == Wheel.Maro)
+            Wheel.DrawSelectionGlow(seb_self, part, pos, alpha);
+        orig(seb_self, part, pos, alpha);
     }
 
     private static void SoundPhage(ILContext context)
@@ -1008,19 +1053,55 @@ public static class Glyphs
                         Brimstone.API.PlaySound(sim, CataclysmDiscardSound);
                     }
                 tryTransmute:
-                    if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom) || !sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
+                    bool bowl1Maro = false;
+                    bool bowl2Maro = false;
+                    if (!sim.FindAtomRelative(part, CataclysmBowl1Hex).method_99(out AtomReference bowl1Atom))
                     {
-                        goto tryEject;
+                        if (!Wheel.MaybeFindMaroWheelAtom(sim, part, CataclysmBowl1Hex).method_99(out bowl1Atom))
+                        {
+                            goto tryEject;
+                        }
+                        bowl1Maro = true;
                     }
+                    if (!sim.FindAtomRelative(part, CataclysmBowl2Hex).method_99(out AtomReference bowl2Atom))
+                    {
+                        if (bowl1Maro || !Wheel.MaybeFindMaroWheelAtom(sim, part, CataclysmBowl2Hex).method_99(out bowl2Atom))
+                        {
+                            // if bowl1 also has Maro's wheel, nothing will happen
+                            goto tryEject;
+                        }
+                        bowl1Maro = true;
+                    }
+                    else
+                    {
+                    }
+
+                    int state = 0;
                     AtomReference bowlVolic = null;
                     AtomReference bowlZephiron = null;
                     if (bowl1Atom.field_2280 == Atoms.Zephiron)
                     {
+                        if (bowl1Maro)
+                        {
+                            state = 2;
+                        }
+                        else if (bowl2Maro)
+                        {
+                            state = 1;
+                        }
                         bowlVolic = bowl2Atom;
                         bowlZephiron = bowl1Atom;
                     }
                     else if (bowl2Atom.field_2280 == Atoms.Zephiron)
                     {
+                        if (bowl1Maro)
+                        {
+                            state = 1;
+                        }
+                        else if (bowl2Maro)
+                        {
+                            state = 2;
+                        }
                         bowlVolic = bowl1Atom;
                         bowlZephiron = bowl2Atom;
                     }
@@ -1036,8 +1117,15 @@ public static class Glyphs
                         goto tryEject;
                     }
                     // transfuse
-                    Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
-                    Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
+                    if (state != 1)
+                    {
+                        Brimstone.API.ChangeAtom(bowlZephiron, transfusingFrixon ? Atoms.Gelaron : Atoms.Frixon);
+                    }
+
+                    if (state != 2)
+                    {
+                        Brimstone.API.ChangeAtom(bowlVolic, Atoms.Zephiron);
+                    }
                     bowlVolic.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlVolic.field_2280, class_238.field_1989.field_81.field_614, 30f);
                     bowlZephiron.field_2279.field_2276 = new class_168(seb, 0, (enum_132)1, bowlZephiron.field_2280, class_238.field_1989.field_81.field_614, 30f);
                     Brimstone.API.PlaySound(sim, transfusingFrixon ? CataclysmTransfuseFrix : CataclysmTransfuseGel);

@@ -19,11 +19,14 @@ public static class Textures
         public static readonly Texture Consolidation = Brimstone.API.GetTexture(glyphTexturePath + "icons/consolidation");
         public static readonly Texture ConsolidationHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/consolidation_hover");
 
-        public static readonly Texture Putrefaction = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction");
+        public static readonly Texture Putrefaction = Brimstone.API.GetTexture(glyphTexturePath + "icons/putrefaction");
         public static readonly Texture PutrefactionHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction_hover");
 
-        public static readonly Texture Cataclysm = Brimstone.API.GetTexture(glyphTexturePath + "icon/cataclysm");
-        public static readonly Texture CataclysmHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/cataclysm_hover");
+        public static readonly Texture Cataclysm = Brimstone.API.GetTexture(glyphTexturePath + "icons/cataclysm");
+        public static readonly Texture CataclysmHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/cataclysm_hover");
+        
+        public static readonly Texture Maro = Brimstone.API.GetTexture(glyphTexturePath + "icons/maro");
+        public static readonly Texture MaroHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/maro_hover");
     }
 
     public static class Select
