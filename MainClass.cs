@@ -33,6 +33,7 @@ public class MainClass : QuintessentialMod
     {
         Quintessential.Logger.Log(LogPrefix + "Initializing...");
         Atoms.AddAtomTypes();
+        Exports.ExportAtoms();
         Wheel.LoadWheel();
         Glyphs.LoadSounds();
         Glyphs.AddHooks();
