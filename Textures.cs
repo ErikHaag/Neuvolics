@@ -20,7 +20,7 @@ public static class Textures
         public static readonly Texture ConsolidationHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/consolidation_hover");
 
         public static readonly Texture Putrefaction = Brimstone.API.GetTexture(glyphTexturePath + "icons/putrefaction");
-        public static readonly Texture PutrefactionHover = Brimstone.API.GetTexture(glyphTexturePath + "icon/putrefaction_hover");
+        public static readonly Texture PutrefactionHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/putrefaction_hover");
 
         public static readonly Texture Cataclysm = Brimstone.API.GetTexture(glyphTexturePath + "icons/cataclysm");
         public static readonly Texture CataclysmHover = Brimstone.API.GetTexture(glyphTexturePath + "icons/cataclysm_hover");
