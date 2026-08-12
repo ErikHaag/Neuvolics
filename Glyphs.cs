@@ -348,7 +348,7 @@ public static class Glyphs
                 FixationHole2Hex,
                 FixationHole3Hex,
                 FixationZephironIrisHex,
-                FixationNeumetalIrisHex
+                FixationNeumetalIrisHex 
             },
             customPermission: MainClass.FixationPermission
         );
@@ -542,9 +542,7 @@ public static class Glyphs
         QApi.AddPartType(Fixation, static (part, pos, editor, renderer) =>
         {
             // hold on to your butts!
-            PartSimState pss = editor.method_507().method_481(part);
-            class_236 uco = editor.method_1989(part, pos);
-            float time = editor.method_504();
+            Brimstone.API.GetRenderingHelpers(part, pos, editor, out PartSimState pss, out class_236 partDataWrapper, out float time);
 
             if (OccupiedHexesStale)
             {
@@ -671,50 +669,9 @@ public static class Glyphs
             }
 
             // irises
-            int irisFrame = 15;
-            bool afterIrisOpens = false;
-            Molecule risingAtom = null;
-            Vector2 risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationZephironIrisHex).Rotated(uco.field_1985);
 
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationZephironIrisHex, Vector2.Zero);
-            if (pss.field_2743)
-            {
-                irisFrame = class_162.method_404((int)(class_162.method_411(1f, -1f, time) * 16f), 0, 15);
-                afterIrisOpens = time > 0.5f;
-                risingAtom = Molecule.method_1121(pss.field_2744[0]);
-                if (!afterIrisOpens)
-                {
-                    // show atom rising behind iris
-                    Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
-                }
-            }
-            renderer.method_529(Textures.Irises.Zephiron[irisFrame], FixationZephironIrisHex, Vector2.Zero);
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationZephironIrisHex, Vector2.Zero);
-            if (pss.field_2743 && afterIrisOpens)
-            {
-                // show atom rising infront of iris
-                Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
-            }
-
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_272, FixationNeumetalIrisHex, Vector2.Zero);
-            if (pss.field_2743)
-            {
-                risingOffset = uco.field_1984 + class_187.field_1742.method_492(FixationNeumetalIrisHex).Rotated(uco.field_1985);
-                risingAtom = Molecule.method_1121(pss.field_2744[1]);
-                if (!afterIrisOpens)
-                {
-                    // show atom rising behind iris
-                    Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
-                }
-            }
-
-            renderer.method_529(Textures.Irises.Neumetal[irisFrame], FixationNeumetalIrisHex, Vector2.Zero);
-            renderer.method_528(class_238.field_1989.field_90.field_228.field_271, FixationNeumetalIrisHex, Vector2.Zero);
-            if (pss.field_2743 && afterIrisOpens)
-            {
-                // show atom rising infront of iris
-                Editor.method_925(risingAtom, risingOffset, new HexIndex(0, 0), 0f, 1f, time, 1f, false, null);
-            }
+            Brimstone.API.DrawIris(renderer, partDataWrapper, FixationZephironIrisHex, time, Textures.Irises.Zephiron, pss.field_2743 ? Brimstone.API.ConvertToMaybe(pss.field_2744[0]) : struct_18.field_1431);
+            Brimstone.API.DrawIris(renderer, partDataWrapper, FixationNeumetalIrisHex, time, Textures.Irises.Neumetal, pss.field_2743 ? Brimstone.API.ConvertToMaybe(pss.field_2744[1]) : struct_18.field_1431);
 
             renderer.method_523(Textures.Fixation.Connectors, offset, pivot, 0);
 
@@ -779,7 +736,7 @@ public static class Glyphs
             SolutionEditorBase seb = sim.field_3818;
 
             PartType type = part.method_1159();
-            if (type == Putrefaction)
+                if (type == Putrefaction)
             {
                 HexIndex bowl = part.method_1184(PutrefactionBowlHex);
                 HexIndex hole1 = part.method_1184(PutrefactionHole1Hex);
@@ -1025,8 +982,14 @@ public static class Glyphs
                 }
                 else if (pss.field_2743)
                 {
-                    Brimstone.API.AddAtom(sim, part, FixationZephironIrisHex, pss.field_2744[0]);
-                    Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss.field_2744[1]);
+                    if (pss.field_2744[0] is not null)
+                    {
+                        Brimstone.API.AddAtom(sim, part, FixationZephironIrisHex, pss.field_2744[0]);
+                    }
+                    if (pss.field_2744[1] is not null)
+                    {
+                        Brimstone.API.AddAtom(sim, part, FixationNeumetalIrisHex, pss.field_2744[1]);
+                    }
                 }
             }
             else if (type == Cataclysm)

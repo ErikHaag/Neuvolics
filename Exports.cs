@@ -1,6 +1,4 @@
 ﻿using MonoMod.ModInterop;
-using MonoMod.Utils;
-using System;
 using PartType = class_139;
 using Texture = class_256;
 
@@ -12,6 +10,11 @@ public class Exports
     public static void ExportAtoms()
     {
         typeof(AtomExports).ModInterop();
+    }
+
+    public static void ExportGlyphs()
+    {
+        typeof(GlyphExports).ModInterop();
     }
 
     [ModExportName("Neuvolics.Atoms")]
@@ -29,4 +32,16 @@ public class Exports
         public static AtomType GetNeumetalAtom(int index) => API.GetNeumetalAtom(index);
         public static int GetNeumetalAtom(AtomType neumetal) => API.GetNeumetalIndex(neumetal);
     }
+
+    [ModExportName("Neuvolics.Glyphs")]
+    public static class GlyphExports
+    {
+        public static PartType GetPutrefaction() => Glyphs.Putrefaction;
+        public static PartType GetConsolidation() => Glyphs.Consolidation;
+        public static PartType GetSeparation() => Glyphs.Separation;
+        public static PartType GetFixation() => Glyphs.Fixation;
+        public static PartType GetCataclysm() => Glyphs.Cataclysm;
+    }
+
+
 }
