@@ -39,6 +39,8 @@ public class MainClass : QuintessentialMod
         Glyphs.AddHooks();
         Glyphs.AddGlyphs();
         Exports.ExportGlyphs();
+        Exports.ExportTextures();
+        Exports.ExportSounds();
 
         QApi.AddPuzzlePermission(PutrefactionPermission, "Glyph of Putrefaction", "Neuvolics");
         QApi.AddPuzzlePermission(ConsolidationPermission, "Glyph of Consolidation", "Neuvolics");
