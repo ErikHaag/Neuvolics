@@ -10,15 +10,15 @@
 
 	<PropertyGroup>
 		<!-- Replace me with the path to the opus magnum directory, which contains ModdedLightning.exe, et.al-->
-		<OpusDir>/home/zephyr/.local/share/Steam/steamapps/common/Opus Magnum</OpusDir>
+		<OpusDir>C:\Program Files (x86)\Steam\steamapps\common\Opus Magnum Old</OpusDir>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="Brimstone">
-			<HintPath>$(OpusDir)\Mods\Brimstone_2.2.1\Brimstone.dll</HintPath>
+			<HintPath>$(OpusDir)\Mods\Brimstone\Brimstone.dll</HintPath>
 		</Reference>
 		<Reference Include="FTSIGCTU">
-		  <HintPath>$(OpusDir)\Mods\FTSIGCTU_0.7.4\FTSIGCTU.dll</HintPath>
+			<HintPath>$(OpusDir)\UnpackedMods\FTSIGCTU_0.7.4\FTSIGCTU.dll</HintPath>
 		</Reference>
 		<Reference Include="MMHOOK_ModdedLightning">
 			<HintPath>$(OpusDir)\MMHOOK_ModdedLightning.dll</HintPath>
